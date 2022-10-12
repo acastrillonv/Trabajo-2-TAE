@@ -1,0 +1,87 @@
+---
+title: "Trabajo 2 TAE"
+author: "Valentina Vanegas Castaño, Edwar Jose Londoño Correa, Andres Castrillón Velasquez, Diego Andres Chavarria Riaño, Sebastian Rendon Arteaga"
+format: html
+editor: visual
+---
+
+Carga del dataset
+
+```{r}
+data <- read.csv("loan_data_2007_2014.csv", encoding = "UTF-8")
+```
+
+Descripción de los datos
+
+```{r}
+summary(data)
+```
+
+En el resumen anterior, pudimos identificar que existen variables que todos sus valores son N/A. A continuación de examinará cuales variables son estas
+
+```{r}
+apply(X = is.na(data), MARGIN = 2, FUN = sum)
+
+```
+
+Con lo anterior se observa que las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m poseen puros valores N/A, por lo que a continuación serán eliminadas del dataset
+
+```{r}
+data2 <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m))
+```
+
+Se verifica el tipo de dato de las variables en el dataset
+
+```{r}
+sapply(data2, class)
+```
+
+Se procede a separar las variables en numéricas, de cadena y de tipo fecha
+
+```{r}
+variables_num <- sapply(data2, is.numeric)
+data_num <- data2[variables_num]
+variables_cadena <- sapply(data2, is.character)
+data_caden <- data2[variables_cadena]
+data_caden <- subset(data_caden, select= -c(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))
+data_tipoFecha <- subset(data2,select= c(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))
+
+```
+
+## Análisis de Variable categóricas
+
+```{r}
+dplyr::count(data_caden, data_caden$application_type, sort = TRUE)
+```
+
+Se realizó la conversión de las siguientes variables de tipo 'charecter' a 'factor'
+
+```{r}
+data_caden$term <- as.factor(data_caden$term)
+data_caden$grade <- as.factor(data_caden$grade)
+data_caden$sub_grade <- as.factor(data_caden$sub_grade)
+data_caden$emp_title <- as.factor(data_caden$emp_title)
+data_caden$emp_length <- as.factor(data_caden$emp_length)
+data_caden$home_ownership <- as.factor(data_caden$home_ownership)
+data_caden$verification_status <- as.factor(data_caden$verification_status)
+data_caden$issue_d <- as.factor(data_caden$issue_d)
+data_caden$loan_status <- as.factor(data_caden$loan_status)
+data_caden$pymnt_plan <- as.factor(data_caden$pymnt_plan)
+data_caden$purpose <- as.factor(data_caden$purpose)
+data_caden$title <- as.factor(data_caden$title)
+data_caden$addr_state <- as.factor(data_caden$addr_state)
+data_caden$initial_list_status <- as.factor(data_caden$initial_list_status)
+
+```
+
+Se eliminan las variables: url, desc, zip_code, application_type
+
+```{r}
+data_caden <- subset(data_caden, select= -c(url, desc, zip_code, application_type))
+```
+
+Se visualiza un resume de las variables categoricas
+
+```{r}
+summary(data_caden)
+```
