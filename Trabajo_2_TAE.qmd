@@ -11,8 +11,8 @@ Carga del dataset
 d1<- read.csv("loan_data_2007_2014-1.csv", encoding = "UTF-8")
 d2<- read.csv("loan_data_2007_2014-2.csv", encoding = "UTF-8")
 d3<- read.csv("loan_data_2007_2014-3.csv", encoding = "UTF-8")
-dt1<- rbind(d1,d2)
-data <- rbind(dt1,d3)
+daux<- rbind(d1,d2)
+data <- rbind(daux,d3)
 ```
 
 Descripción de los datos
@@ -43,10 +43,6 @@ sapply(data, class)
 ```
 
 En el dataset tenemos variables de tipo numericas y de tipo character, para facilidad en el trabajo, se cambian las variables de tipo character a factor.
-
-```{r}
-dplyr::count(data, data$application_type, sort = TRUE)
-```
 
 ```{r}
 data$term <- as.factor(data$term)
@@ -157,7 +153,7 @@ Se crea una función para la transformación de la variable loan_status.
 ```{r}
 transformacion_varialeObjetivo <- function(valor){
   valor_nuevo <- ""
-  if ((valor == "Late (31-120 days)") | (valor == "Default")){
+  if ((as.character(valor) == "Late (31-120 days)") | (as.character(valor) == "Default")){
     valor_nuevo <- "Incumple"
   }else{
     valor_nuevo <- "Cumple"
@@ -169,7 +165,23 @@ transformacion_varialeObjetivo <- function(valor){
 Se aplica la función creada a la variable loan_status.
 
 ```{r}
-Y <- sapply(Y,transformacion_varialeObjetivo)
+Y$loan_status <- sapply(Y$loan_status,transformacion_varialeObjetivo)
+```
+
+```{r}
+dplyr::count(Y, Y$loan_status, sort = TRUE)
+```
+
+Se unen los datos numéricos con los datos categóricos
+
+```{r}
+datos <- merge(x = data_num, y = data_cat_dummy, all = TRUE)
+```
+
+## División del conjunto en entrenamiento y validación
+
+```{r}
+n_muestra <- dim(datos)[1]
 ```
 
 Estandarización
