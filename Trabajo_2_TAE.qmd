@@ -104,6 +104,13 @@ Se visualiza si las variables categóricas poseen valores N/A
 apply(X = is.na(data_cat), MARGIN = 2, FUN = sum)
 ```
 
+Se separa la variable loan_status de las demás variables categóricas.
+
+```{r}
+Y<- subset(data_cat, select = loan_status)
+data_cat <- subset(data_cat, select = -c(loan_status))
+```
+
 Se observa que no hay valores N/A en las variables categóricas. A continuación, se crean las variables dummys para cada variable categorica
 
 ```{r}
@@ -143,10 +150,34 @@ data_num$acc_now_delinq[is.na(data_num$acc_now_delinq)] <- 0.000000
 summary(data_num)
 ```
 
+## Modificación de la variable objetivo
+
+Se crea una función para la transformación de la variable loan_status.
+
+```{r}
+transformacion_varialeObjetivo <- function(valor){
+  valor_nuevo <- ""
+  if ((valor == "Late (31-120 days)") | (valor == "Default")){
+    valor_nuevo <- "Incumple"
+  }else{
+    valor_nuevo <- "Cumple"
+  }
+  return(valor_nuevo)
+}
+```
+
+Se aplica la función creada a la variable loan_status.
+
+```{r}
+Y <- sapply(Y,transformacion_varialeObjetivo)
+```
+
+Estandarización
+
 Se estandarizan las variables numéricas
 
 ```{r}
-#media_num <- colMeans(data_num)
-#sd_num <- apply(data_num,2,sd)
-#data_num_std <- scale(data_num,center = media_num, scale = sd_num)
+media_num <- colMeans(data_num)
+sd_num <- apply(data_num,2,sd)
+data_num_std <- scale(data_num,center = media_num, scale = sd_num)
 ```
