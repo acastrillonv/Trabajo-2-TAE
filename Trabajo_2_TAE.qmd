@@ -235,3 +235,5 @@ X_tr_acp <- data.frame(ACP$x[,1:43])
 ```
 
 ## Ajuste de un modelo de vecinos más cercanos
+
+prueba
