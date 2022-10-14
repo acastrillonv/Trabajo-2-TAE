@@ -30,10 +30,10 @@ apply(X = is.na(data), MARGIN = 2, FUN = sum)
 
 Con lo anterior se observa que las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m poseen puros valores N/A, por lo que a continuación serán eliminadas del dataset.
 
-También se borran la variables id url, desc, zip_code, application_type, ya que no nos aportarán en el modelo a construir.
+También se borran la variables id, member_id, url, desc, zip_code, application_type, policy_code, home_ownership, ya que no nos aportarán en el modelo a construir.
 
 ```{r}
-data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type))
+data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type, member_id, policy_code, home_ownership))
 ```
 
 Se verifica el tipo de dato de las variables en el dataset
@@ -50,7 +50,6 @@ data$grade <- as.factor(data$grade)
 data$sub_grade <- as.factor(data$sub_grade)
 data$emp_title <- as.factor(data$emp_title)
 data$emp_length <- as.factor(data$emp_length)
-data$home_ownership <- as.factor(data$home_ownership)
 data$verification_status <- as.factor(data$verification_status)
 data$issue_d <- as.factor(data$issue_d)
 data$loan_status <- as.factor(data$loan_status)
@@ -175,21 +174,64 @@ dplyr::count(Y, Y$loan_status, sort = TRUE)
 Se unen los datos numéricos con los datos categóricos
 
 ```{r}
-datos <- merge(x = data_num, y = data_cat_dummy, all = TRUE)
+datos <- cbind(data_num,data_cat_dummy,Y)
 ```
 
 ## División del conjunto en entrenamiento y validación
 
 ```{r}
 n_muestra <- dim(datos)[1]
+p_vl <- 0.2 # proporción de datos para validación
+ix_vl <- sample(n_muestra,size = round(n_muestra*p_vl),
+                replace = FALSE)
+datos_vl <- datos[ix_vl,]
+datos_tr <- datos[-ix_vl,]
 ```
+
+Hagamos una revisión de la tasa de compra en los conjuntos de entrenamiento y de validación:
+
+-   En entrenamiento:
+
+```{r}
+proportions(table(datos_tr$loan_status))
+```
+
+-   En validación:
+
+```{r}
+proportions(table(datos_vl$loan_status))
+```
+
+## Reducción de la dimensionalidad
 
 Estandarización
 
 Se estandarizan las variables numéricas
 
 ```{r}
-media_num <- colMeans(data_num)
-sd_num <- apply(data_num,2,sd)
-data_num_std <- scale(data_num,center = media_num, scale = sd_num)
+X_tr <- subset(datos_tr,select = -loan_status)
+Y_tr <- datos_tr$loan_status
 ```
+
+```{r}
+media_X_tr <- colMeans(X_tr)
+sd_X_tr <- apply(X_tr,2,sd)
+X_tr_std <- scale(X_tr,center = media_X_tr, scale = sd_X_tr)
+```
+
+### ACP
+
+```{r}
+#X_tr_std <- as.data.frame(X_tr_std)
+ACP <- prcomp(X_tr_std)
+```
+
+```{r}
+summary(ACP)
+```
+
+```{r}
+X_tr_acp <- data.frame(ACP$x[,1:43])
+```
+
+## Ajuste de un modelo de vecinos más cercanos
