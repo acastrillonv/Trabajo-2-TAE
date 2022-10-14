@@ -370,37 +370,34 @@ mths_since_last_major_derog                 policy_code
                      466285                      466285 </code></pre>
 </div>
 </div>
-<p>Con lo anterior se observa que las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m poseen puros valores N/A, por lo que a continuación serán eliminadas del dataset</p>
+<p>Con lo anterior se observa que las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m poseen puros valores N/A, por lo que a continuación serán eliminadas del dataset.</p>
+<p>También se borran la variables id url, desc, zip_code, application_type, ya que no nos aportarán en el modelo a construir.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> <span class="fu">subset</span>(data,<span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">subset</span>(data,<span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Se verifica el tipo de dato de las variables en el dataset</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(data2, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(data, class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                         id                   member_id 
+<pre><code>                  member_id                   loan_amnt 
                   "integer"                   "integer" 
-                  loan_amnt                 funded_amnt 
-                  "integer"                   "integer" 
-            funded_amnt_inv                        term 
-                  "numeric"                 "character" 
-                   int_rate                 installment 
-                  "numeric"                   "numeric" 
-                      grade                   sub_grade 
-                "character"                 "character" 
-                  emp_title                  emp_length 
-                "character"                 "character" 
-             home_ownership                  annual_inc 
+                funded_amnt             funded_amnt_inv 
+                  "integer"                   "numeric" 
+                       term                    int_rate 
                 "character"                   "numeric" 
-        verification_status                     issue_d 
+                installment                       grade 
+                  "numeric"                 "character" 
+                  sub_grade                   emp_title 
                 "character"                 "character" 
-                loan_status                  pymnt_plan 
+                 emp_length              home_ownership 
                 "character"                 "character" 
-                        url                        desc 
+                 annual_inc         verification_status 
+                  "numeric"                 "character" 
+                    issue_d                 loan_status 
                 "character"                 "character" 
-                    purpose                       title 
+                 pymnt_plan                     purpose 
                 "character"                 "character" 
-                   zip_code                  addr_state 
+                      title                  addr_state 
                 "character"                 "character" 
                         dti                 delinq_2yrs 
                   "numeric"                   "integer" 
@@ -430,73 +427,79 @@ mths_since_last_major_derog                 policy_code
                 "character"                   "integer" 
 mths_since_last_major_derog                 policy_code 
                   "integer"                   "integer" 
-           application_type              acc_now_delinq 
-                "character"                   "integer" 
-               tot_coll_amt                 tot_cur_bal 
+             acc_now_delinq                tot_coll_amt 
                   "integer"                   "integer" 
-           total_rev_hi_lim 
-                  "integer" </code></pre>
+                tot_cur_bal            total_rev_hi_lim 
+                  "integer"                   "integer" </code></pre>
 </div>
+</div>
+<p>En el dataset tenemos variables de tipo numericas y de tipo character, para facilidad en el trabajo, se cambian las variables de tipo character a factor.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">count</span>(data, data<span class="sc">$</span>application_type, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       n
+1 466285</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>term <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>term)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>grade <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>grade)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>sub_grade <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>sub_grade)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>emp_title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>emp_title)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>emp_length <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>emp_length)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>home_ownership <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>home_ownership)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>verification_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>verification_status)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>issue_d <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>issue_d)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>loan_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>loan_status)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>pymnt_plan <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>pymnt_plan)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>purpose <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>purpose)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>title)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>addr_state <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>addr_state)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>data<span class="sc">$</span>initial_list_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data<span class="sc">$</span>initial_list_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Se eliminan las variables addr_state, sub_grade, emp_title, issue_d, title</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">subset</span>(data,<span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(addr_state, sub_grade, emp_title, issue_d, title))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Se procede a separar las variables en numéricas, de cadena y de tipo fecha</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>variables_num <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data2, is.numeric)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>data_num <span class="ot">&lt;-</span> data2[variables_num]</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>variables_cadena <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data2, is.character)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>data_caden <span class="ot">&lt;-</span> data2[variables_cadena]</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>data_caden <span class="ot">&lt;-</span> <span class="fu">subset</span>(data_caden, <span class="at">select=</span> <span class="sc">-</span><span class="fu">c</span>(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>data_tipoFecha <span class="ot">&lt;-</span> <span class="fu">subset</span>(data2,<span class="at">select=</span> <span class="fu">c</span>(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>variables_num <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data, is.numeric)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>data_num <span class="ot">&lt;-</span> data[variables_num]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>variables_cat <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data, is.factor)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>data_cat <span class="ot">&lt;-</span> data[variables_cat]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>data_tipoFecha <span class="ot">&lt;-</span> <span class="fu">subset</span>(data,<span class="at">select=</span> <span class="fu">c</span>(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Se analiza si existen registro duplicados</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data_duplicated <span class="ot">&lt;-</span> <span class="fu">duplicated</span>(data)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(data_duplicated)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>No existen registros duplicados.</p>
 <section id="análisis-de-variable-categóricas" class="level2">
 <h2 class="anchored" data-anchor-id="análisis-de-variable-categóricas">Análisis de Variable categóricas</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">count</span>(data_caden, data_caden<span class="sc">$</span>application_type, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  data_caden$application_type      n
-1                  INDIVIDUAL 466285</code></pre>
-</div>
-</div>
-<p>Se realizó la conversión de las siguientes variables de tipo ‘charecter’ a ‘factor’</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>term <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>term)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>grade <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>grade)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>sub_grade <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>sub_grade)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>emp_title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>emp_title)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>emp_length <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>emp_length)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>home_ownership <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>home_ownership)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>verification_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>verification_status)</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>issue_d <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>issue_d)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>loan_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>loan_status)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>pymnt_plan <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>pymnt_plan)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>purpose <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>purpose)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>title <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>title)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>addr_state <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>addr_state)</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>data_caden<span class="sc">$</span>initial_list_status <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(data_caden<span class="sc">$</span>initial_list_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Se eliminan las variables: url, desc, zip_code, application_type</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data_caden <span class="ot">&lt;-</span> <span class="fu">subset</span>(data_caden, <span class="at">select=</span> <span class="sc">-</span><span class="fu">c</span>(url, desc, zip_code, application_type))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 <p>Se visualiza un resume de las variables categoricas</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data_caden)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data_cat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>         term        grade        sub_grade                 emp_title     
-  36 months:337953   A: 74867   B3     : 31686                   : 27588  
-  60 months:128332   B:136929   B4     : 30505   Teacher         :  5399  
-                     C:125293   C1     : 26953   Manager         :  4438  
-                     D: 76888   C2     : 26740   Registered Nurse:  2316  
-                     E: 35757   B2     : 26610   RN              :  2204  
-                     F: 13229   C3     : 25317   Supervisor      :  1967  
-                     G:  3322   (Other):298474   (Other)         :422373  
-     emp_length      home_ownership        verification_status    issue_d      
- 10+ years:150049   ANY     :     1   Not Verified   :148237   Oct-14 : 38782  
- 2 years  : 41373   MORTGAGE:235875   Source Verified:149993   Jul-14 : 29306  
- 3 years  : 36596   NONE    :    50   Verified       :168055   Nov-14 : 25054  
- &lt; 1 year : 36265   OTHER   :   182                            May-14 : 19099  
- 5 years  : 30774   OWN     : 41704                            Apr-14 : 19071  
- 1 year   : 29622   RENT    :188473                            Aug-14 : 18814  
- (Other)  :141606                                              (Other):316159  
+<pre><code>         term        grade          emp_length      home_ownership  
+  36 months:337953   A: 74867   10+ years:150049   ANY     :     1  
+  60 months:128332   B:136929   2 years  : 41373   MORTGAGE:235875  
+                     C:125293   3 years  : 36596   NONE    :    50  
+                     D: 76888   &lt; 1 year : 36265   OTHER   :   182  
+                     E: 35757   5 years  : 30774   OWN     : 41704  
+                     F: 13229   1 year   : 29622   RENT    :188473  
+                     G:  3322   (Other)  :141606                    
+      verification_status
+ Not Verified   :148237  
+ Source Verified:149993  
+ Verified       :168055  
+                         
+                         
+                         
+                         
                                              loan_status     pymnt_plan
  Current                                           :224226   n:466276  
  Fully Paid                                        :184739   y:     9  
@@ -505,23 +508,210 @@ mths_since_last_major_derog                 policy_code
  In Grace Period                                   :  3146             
  Does not meet the credit policy. Status:Fully Paid:  1988             
  (Other)                                           :  2811             
-               purpose                           title          addr_state    
- debt_consolidation:274195   Debt consolidation     :164075   CA     : 71450  
- credit_card       :104157   Credit card refinancing: 62275   NY     : 40242  
- home_improvement  : 26537   Debt Consolidation     : 15760   TX     : 36439  
- other             : 23690   Home improvement       : 14849   FL     : 31637  
- major_purchase    :  9828   Other                  : 12713   IL     : 18612  
- small_business    :  7013   Consolidation          :  5381   NJ     : 18061  
- (Other)           : 20865   (Other)                :191232   (Other):249844  
- initial_list_status
- f:303005           
- w:163280           
-                    
-                    
-                    
-                    
-                    </code></pre>
+               purpose       initial_list_status
+ debt_consolidation:274195   f:303005           
+ credit_card       :104157   w:163280           
+ home_improvement  : 26537                      
+ other             : 23690                      
+ major_purchase    :  9828                      
+ small_business    :  7013                      
+ (Other)           : 20865                      </code></pre>
 </div>
+</div>
+<p>Se visualiza si las variables categóricas poseen valores N/A</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(<span class="at">X =</span> <span class="fu">is.na</span>(data_cat), <span class="at">MARGIN =</span> <span class="dv">2</span>, <span class="at">FUN =</span> sum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               term               grade          emp_length      home_ownership 
+                  0                   0                   0                   0 
+verification_status         loan_status          pymnt_plan             purpose 
+                  0                   0                   0                   0 
+initial_list_status 
+                  0 </code></pre>
+</div>
+</div>
+<p>Se observa que no hay valores N/A en las variables categóricas. A continuación, se crean las variables dummys para cada variable categorica</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: ggplot2</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>onehotencoding <span class="ot">&lt;-</span> <span class="fu">dummyVars</span>(<span class="sc">~</span>.,<span class="at">data =</span> data_cat)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>data_cat_dummy <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">predict</span>(onehotencoding,data_cat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="análisis-de-variable-numéricas" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-de-variable-numéricas">Análisis de Variable numéricas</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data_num)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   member_id          loan_amnt      funded_amnt    funded_amnt_inv
+ Min.   :   70473   Min.   :  500   Min.   :  500   Min.   :    0  
+ 1st Qu.: 4379705   1st Qu.: 8000   1st Qu.: 8000   1st Qu.: 8000  
+ Median :11941075   Median :12000   Median :12000   Median :12000  
+ Mean   :14597661   Mean   :14317   Mean   :14292   Mean   :14222  
+ 3rd Qu.:23001541   3rd Qu.:20000   3rd Qu.:20000   3rd Qu.:19950  
+ Max.   :40860827   Max.   :35000   Max.   :35000   Max.   :35000  
+                                                                   
+    int_rate      installment        annual_inc           dti       
+ Min.   : 5.42   Min.   :  15.67   Min.   :   1896   Min.   : 0.00  
+ 1st Qu.:10.99   1st Qu.: 256.69   1st Qu.:  45000   1st Qu.:11.36  
+ Median :13.66   Median : 379.89   Median :  63000   Median :16.87  
+ Mean   :13.83   Mean   : 432.06   Mean   :  73277   Mean   :17.22  
+ 3rd Qu.:16.49   3rd Qu.: 566.58   3rd Qu.:  88960   3rd Qu.:22.78  
+ Max.   :26.06   Max.   :1409.99   Max.   :7500000   Max.   :39.99  
+                                   NA's   :4                        
+  delinq_2yrs      inq_last_6mths    mths_since_last_delinq
+ Min.   : 0.0000   Min.   : 0.0000   Min.   :  0.0         
+ 1st Qu.: 0.0000   1st Qu.: 0.0000   1st Qu.: 16.0         
+ Median : 0.0000   Median : 0.0000   Median : 31.0         
+ Mean   : 0.2847   Mean   : 0.8047   Mean   : 34.1         
+ 3rd Qu.: 0.0000   3rd Qu.: 1.0000   3rd Qu.: 49.0         
+ Max.   :29.0000   Max.   :33.0000   Max.   :188.0         
+ NA's   :29        NA's   :29        NA's   :250351        
+ mths_since_last_record    open_acc        pub_rec          revol_bal      
+ Min.   :  0.0          Min.   : 0.00   Min.   : 0.0000   Min.   :      0  
+ 1st Qu.: 53.0          1st Qu.: 8.00   1st Qu.: 0.0000   1st Qu.:   6413  
+ Median : 76.0          Median :10.00   Median : 0.0000   Median :  11764  
+ Mean   : 74.3          Mean   :11.19   Mean   : 0.1606   Mean   :  16230  
+ 3rd Qu.:102.0          3rd Qu.:14.00   3rd Qu.: 0.0000   3rd Qu.:  20333  
+ Max.   :129.0          Max.   :84.00   Max.   :63.0000   Max.   :2568995  
+ NA's   :403647         NA's   :29      NA's   :29                         
+   revol_util       total_acc        out_prncp       out_prncp_inv    
+ Min.   :  0.00   Min.   :  1.00   Min.   :    0.0   Min.   :    0.0  
+ 1st Qu.: 39.20   1st Qu.: 17.00   1st Qu.:    0.0   1st Qu.:    0.0  
+ Median : 57.60   Median : 23.00   Median :  441.5   Median :  441.4  
+ Mean   : 56.18   Mean   : 25.06   Mean   : 4410.1   Mean   : 4408.4  
+ 3rd Qu.: 74.70   3rd Qu.: 32.00   3rd Qu.: 7341.6   3rd Qu.: 7338.4  
+ Max.   :892.30   Max.   :156.00   Max.   :32160.4   Max.   :32160.4  
+ NA's   :340      NA's   :29                                          
+  total_pymnt    total_pymnt_inv total_rec_prncp total_rec_int    
+ Min.   :    0   Min.   :    0   Min.   :    0   Min.   :    0.0  
+ 1st Qu.: 5552   1st Qu.: 5499   1st Qu.: 3709   1st Qu.:  957.3  
+ Median : 9419   Median : 9355   Median : 6818   Median : 1818.9  
+ Mean   :11541   Mean   :11470   Mean   : 8866   Mean   : 2588.7  
+ 3rd Qu.:15308   3rd Qu.:15231   3rd Qu.:12000   3rd Qu.: 3304.5  
+ Max.   :57778   Max.   :57778   Max.   :35000   Max.   :24205.6  
+                                                                  
+ total_rec_late_fee   recoveries       collection_recovery_fee
+ Min.   :  0.0000   Min.   :    0.00   Min.   :   0.000       
+ 1st Qu.:  0.0000   1st Qu.:    0.00   1st Qu.:   0.000       
+ Median :  0.0000   Median :    0.00   Median :   0.000       
+ Mean   :  0.6501   Mean   :   85.34   Mean   :   8.962       
+ 3rd Qu.:  0.0000   3rd Qu.:    0.00   3rd Qu.:   0.000       
+ Max.   :358.6800   Max.   :33520.27   Max.   :7002.190       
+                                                              
+ last_pymnt_amnt   collections_12_mths_ex_med mths_since_last_major_derog
+ Min.   :    0.0   Min.   : 0.00000           Min.   :  0.0              
+ 1st Qu.:  312.6   1st Qu.: 0.00000           1st Qu.: 26.0              
+ Median :  546.0   Median : 0.00000           Median : 42.0              
+ Mean   : 3123.9   Mean   : 0.00909           Mean   : 42.9              
+ 3rd Qu.: 3187.5   3rd Qu.: 0.00000           3rd Qu.: 59.0              
+ Max.   :36234.4   Max.   :20.00000           Max.   :188.0              
+                   NA's   :145                NA's   :367311             
+  policy_code acc_now_delinq      tot_coll_amt      tot_cur_bal     
+ Min.   :1    Min.   :0.000000   Min.   :      0   Min.   :      0  
+ 1st Qu.:1    1st Qu.:0.000000   1st Qu.:      0   1st Qu.:  28618  
+ Median :1    Median :0.000000   Median :      0   Median :  81539  
+ Mean   :1    Mean   :0.004002   Mean   :    192   Mean   : 138802  
+ 3rd Qu.:1    3rd Qu.:0.000000   3rd Qu.:      0   3rd Qu.: 208953  
+ Max.   :1    Max.   :5.000000   Max.   :9152545   Max.   :8000078  
+              NA's   :29         NA's   :70276     NA's   :70276    
+ total_rev_hi_lim 
+ Min.   :      0  
+ 1st Qu.:  13500  
+ Median :  22800  
+ Mean   :  30379  
+ 3rd Qu.:  37900  
+ Max.   :9999999  
+ NA's   :70276    </code></pre>
+</div>
+</div>
+<p>Se eliminan las variables mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, por la cantidad tan elevada de valores N/A que poseen estas variables.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>data_num <span class="ot">&lt;-</span> <span class="fu">subset</span>(data_num, <span class="at">select=</span> <span class="sc">-</span><span class="fu">c</span>(mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A continuación, se completa las variables numéricas que poseean valores N/A cambiandolas por el valor de la mediana de cada atributo.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>annual_inc[<span class="fu">is.na</span>(data_num<span class="sc">$</span>annual_inc)] <span class="ot">&lt;-</span> <span class="dv">63000</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>delinq_2yrs[<span class="fu">is.na</span>(data_num<span class="sc">$</span>delinq_2yrs)] <span class="ot">&lt;-</span> <span class="fl">0.0000</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>inq_last_6mths[<span class="fu">is.na</span>(data_num<span class="sc">$</span>inq_last_6mths)] <span class="ot">&lt;-</span> <span class="fl">0.0000</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>open_acc[<span class="fu">is.na</span>(data_num<span class="sc">$</span>open_acc)] <span class="ot">&lt;-</span> <span class="fl">10.00</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>pub_rec[<span class="fu">is.na</span>(data_num<span class="sc">$</span>pub_rec)] <span class="ot">&lt;-</span> <span class="fl">0.0000</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>revol_util[<span class="fu">is.na</span>(data_num<span class="sc">$</span>revol_util)] <span class="ot">&lt;-</span> <span class="fl">57.60</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>total_acc[<span class="fu">is.na</span>(data_num<span class="sc">$</span>total_acc)] <span class="ot">&lt;-</span> <span class="fl">23.00</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>collections_12_mths_ex_med[<span class="fu">is.na</span>(data_num<span class="sc">$</span>collections_12_mths_ex_med)] <span class="ot">&lt;-</span> <span class="fl">0.0000</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>data_num<span class="sc">$</span>acc_now_delinq[<span class="fu">is.na</span>(data_num<span class="sc">$</span>acc_now_delinq)] <span class="ot">&lt;-</span> <span class="fl">0.000000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data_num)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   member_id          loan_amnt      funded_amnt    funded_amnt_inv
+ Min.   :   70473   Min.   :  500   Min.   :  500   Min.   :    0  
+ 1st Qu.: 4379705   1st Qu.: 8000   1st Qu.: 8000   1st Qu.: 8000  
+ Median :11941075   Median :12000   Median :12000   Median :12000  
+ Mean   :14597661   Mean   :14317   Mean   :14292   Mean   :14222  
+ 3rd Qu.:23001541   3rd Qu.:20000   3rd Qu.:20000   3rd Qu.:19950  
+ Max.   :40860827   Max.   :35000   Max.   :35000   Max.   :35000  
+    int_rate      installment        annual_inc           dti       
+ Min.   : 5.42   Min.   :  15.67   Min.   :   1896   Min.   : 0.00  
+ 1st Qu.:10.99   1st Qu.: 256.69   1st Qu.:  45000   1st Qu.:11.36  
+ Median :13.66   Median : 379.89   Median :  63000   Median :16.87  
+ Mean   :13.83   Mean   : 432.06   Mean   :  73277   Mean   :17.22  
+ 3rd Qu.:16.49   3rd Qu.: 566.58   3rd Qu.:  88953   3rd Qu.:22.78  
+ Max.   :26.06   Max.   :1409.99   Max.   :7500000   Max.   :39.99  
+  delinq_2yrs      inq_last_6mths       open_acc        pub_rec       
+ Min.   : 0.0000   Min.   : 0.0000   Min.   : 0.00   Min.   : 0.0000  
+ 1st Qu.: 0.0000   1st Qu.: 0.0000   1st Qu.: 8.00   1st Qu.: 0.0000  
+ Median : 0.0000   Median : 0.0000   Median :10.00   Median : 0.0000  
+ Mean   : 0.2847   Mean   : 0.8047   Mean   :11.19   Mean   : 0.1605  
+ 3rd Qu.: 0.0000   3rd Qu.: 1.0000   3rd Qu.:14.00   3rd Qu.: 0.0000  
+ Max.   :29.0000   Max.   :33.0000   Max.   :84.00   Max.   :63.0000  
+   revol_bal         revol_util       total_acc        out_prncp      
+ Min.   :      0   Min.   :  0.00   Min.   :  1.00   Min.   :    0.0  
+ 1st Qu.:   6413   1st Qu.: 39.20   1st Qu.: 17.00   1st Qu.:    0.0  
+ Median :  11764   Median : 57.60   Median : 23.00   Median :  441.5  
+ Mean   :  16230   Mean   : 56.18   Mean   : 25.06   Mean   : 4410.1  
+ 3rd Qu.:  20333   3rd Qu.: 74.70   3rd Qu.: 32.00   3rd Qu.: 7341.6  
+ Max.   :2568995   Max.   :892.30   Max.   :156.00   Max.   :32160.4  
+ out_prncp_inv      total_pymnt    total_pymnt_inv total_rec_prncp
+ Min.   :    0.0   Min.   :    0   Min.   :    0   Min.   :    0  
+ 1st Qu.:    0.0   1st Qu.: 5552   1st Qu.: 5499   1st Qu.: 3709  
+ Median :  441.4   Median : 9419   Median : 9355   Median : 6818  
+ Mean   : 4408.4   Mean   :11541   Mean   :11470   Mean   : 8866  
+ 3rd Qu.: 7338.4   3rd Qu.:15308   3rd Qu.:15231   3rd Qu.:12000  
+ Max.   :32160.4   Max.   :57778   Max.   :57778   Max.   :35000  
+ total_rec_int     total_rec_late_fee   recoveries      
+ Min.   :    0.0   Min.   :  0.0000   Min.   :    0.00  
+ 1st Qu.:  957.3   1st Qu.:  0.0000   1st Qu.:    0.00  
+ Median : 1818.9   Median :  0.0000   Median :    0.00  
+ Mean   : 2588.7   Mean   :  0.6501   Mean   :   85.34  
+ 3rd Qu.: 3304.5   3rd Qu.:  0.0000   3rd Qu.:    0.00  
+ Max.   :24205.6   Max.   :358.6800   Max.   :33520.27  
+ collection_recovery_fee last_pymnt_amnt   collections_12_mths_ex_med
+ Min.   :   0.000        Min.   :    0.0   Min.   : 0.000000         
+ 1st Qu.:   0.000        1st Qu.:  312.6   1st Qu.: 0.000000         
+ Median :   0.000        Median :  546.0   Median : 0.000000         
+ Mean   :   8.962        Mean   : 3123.9   Mean   : 0.009082         
+ 3rd Qu.:   0.000        3rd Qu.: 3187.5   3rd Qu.: 0.000000         
+ Max.   :7002.190        Max.   :36234.4   Max.   :20.000000         
+  policy_code acc_now_delinq    
+ Min.   :1    Min.   :0.000000  
+ 1st Qu.:1    1st Qu.:0.000000  
+ Median :1    Median :0.000000  
+ Mean   :1    Mean   :0.004002  
+ 3rd Qu.:1    3rd Qu.:0.000000  
+ Max.   :1    Max.   :5.000000  </code></pre>
+</div>
+</div>
+<p>Se estandarizan las variables numéricas</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#media_num &lt;- colMeans(data_num)</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#sd_num &lt;- apply(data_num,2,sd)</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#data_num_std &lt;- scale(data_num,center = media_num, scale = sd_num)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 

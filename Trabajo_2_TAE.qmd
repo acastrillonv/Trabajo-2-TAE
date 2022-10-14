@@ -28,64 +28,125 @@ apply(X = is.na(data), MARGIN = 2, FUN = sum)
 
 ```
 
-Con lo anterior se observa que las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m poseen puros valores N/A, por lo que a continuación serán eliminadas del dataset
+Con lo anterior se observa que las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m poseen puros valores N/A, por lo que a continuación serán eliminadas del dataset.
+
+También se borran la variables id url, desc, zip_code, application_type, ya que no nos aportarán en el modelo a construir.
 
 ```{r}
-data2 <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m))
+data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type))
 ```
 
 Se verifica el tipo de dato de las variables en el dataset
 
 ```{r}
-sapply(data2, class)
+sapply(data, class)
+```
+
+En el dataset tenemos variables de tipo numericas y de tipo character, para facilidad en el trabajo, se cambian las variables de tipo character a factor.
+
+```{r}
+dplyr::count(data, data$application_type, sort = TRUE)
+```
+
+```{r}
+data$term <- as.factor(data$term)
+data$grade <- as.factor(data$grade)
+data$sub_grade <- as.factor(data$sub_grade)
+data$emp_title <- as.factor(data$emp_title)
+data$emp_length <- as.factor(data$emp_length)
+data$home_ownership <- as.factor(data$home_ownership)
+data$verification_status <- as.factor(data$verification_status)
+data$issue_d <- as.factor(data$issue_d)
+data$loan_status <- as.factor(data$loan_status)
+data$pymnt_plan <- as.factor(data$pymnt_plan)
+data$purpose <- as.factor(data$purpose)
+data$title <- as.factor(data$title)
+data$addr_state <- as.factor(data$addr_state)
+data$initial_list_status <- as.factor(data$initial_list_status)
+```
+
+Se eliminan las variables addr_state, sub_grade, emp_title, issue_d, title
+
+```{r}
+data <- subset(data,select = -c(addr_state, sub_grade, emp_title, issue_d, title))
 ```
 
 Se procede a separar las variables en numéricas, de cadena y de tipo fecha
 
 ```{r}
-variables_num <- sapply(data2, is.numeric)
-data_num <- data2[variables_num]
-variables_cadena <- sapply(data2, is.character)
-data_caden <- data2[variables_cadena]
-data_caden <- subset(data_caden, select= -c(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))
-data_tipoFecha <- subset(data2,select= c(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))
-
+variables_num <- sapply(data, is.numeric)
+data_num <- data[variables_num]
+variables_cat <- sapply(data, is.factor)
+data_cat <- data[variables_cat]
+data_tipoFecha <- subset(data,select= c(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))
 ```
+
+Se analiza si existen registro duplicados
+
+```{r}
+data_duplicated <- duplicated(data)
+sum(data_duplicated)
+```
+
+No existen registros duplicados.
 
 ## Análisis de Variable categóricas
-
-```{r}
-dplyr::count(data_caden, data_caden$application_type, sort = TRUE)
-```
-
-Se realizó la conversión de las siguientes variables de tipo 'charecter' a 'factor'
-
-```{r}
-data_caden$term <- as.factor(data_caden$term)
-data_caden$grade <- as.factor(data_caden$grade)
-data_caden$sub_grade <- as.factor(data_caden$sub_grade)
-data_caden$emp_title <- as.factor(data_caden$emp_title)
-data_caden$emp_length <- as.factor(data_caden$emp_length)
-data_caden$home_ownership <- as.factor(data_caden$home_ownership)
-data_caden$verification_status <- as.factor(data_caden$verification_status)
-data_caden$issue_d <- as.factor(data_caden$issue_d)
-data_caden$loan_status <- as.factor(data_caden$loan_status)
-data_caden$pymnt_plan <- as.factor(data_caden$pymnt_plan)
-data_caden$purpose <- as.factor(data_caden$purpose)
-data_caden$title <- as.factor(data_caden$title)
-data_caden$addr_state <- as.factor(data_caden$addr_state)
-data_caden$initial_list_status <- as.factor(data_caden$initial_list_status)
-
-```
-
-Se eliminan las variables: url, desc, zip_code, application_type
-
-```{r}
-data_caden <- subset(data_caden, select= -c(url, desc, zip_code, application_type))
-```
 
 Se visualiza un resume de las variables categoricas
 
 ```{r}
-summary(data_caden)
+summary(data_cat)
+```
+
+Se visualiza si las variables categóricas poseen valores N/A
+
+```{r}
+apply(X = is.na(data_cat), MARGIN = 2, FUN = sum)
+```
+
+Se observa que no hay valores N/A en las variables categóricas. A continuación, se crean las variables dummys para cada variable categorica
+
+```{r}
+library(caret)
+onehotencoding <- dummyVars(~.,data = data_cat)
+data_cat_dummy <- as.data.frame(predict(onehotencoding,data_cat))
+```
+
+## Análisis de Variable numéricas
+
+```{r}
+summary(data_num)
+```
+
+Se eliminan las variables mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, por la cantidad tan elevada de valores N/A que poseen estas variables.
+
+```{r}
+data_num <- subset(data_num, select= -c(mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim))
+```
+
+A continuación, se completa las variables numéricas que poseean valores N/A cambiandolas por el valor de la mediana de cada atributo.
+
+```{r}
+data_num$annual_inc[is.na(data_num$annual_inc)] <- 63000
+data_num$delinq_2yrs[is.na(data_num$delinq_2yrs)] <- 0.0000
+data_num$inq_last_6mths[is.na(data_num$inq_last_6mths)] <- 0.0000
+data_num$open_acc[is.na(data_num$open_acc)] <- 10.00
+data_num$pub_rec[is.na(data_num$pub_rec)] <- 0.0000
+data_num$revol_util[is.na(data_num$revol_util)] <- 57.60
+data_num$total_acc[is.na(data_num$total_acc)] <- 23.00
+data_num$collections_12_mths_ex_med[is.na(data_num$collections_12_mths_ex_med)] <- 0.0000
+data_num$acc_now_delinq[is.na(data_num$acc_now_delinq)] <- 0.000000
+
+```
+
+```{r}
+summary(data_num)
+```
+
+Se estandarizan las variables numéricas
+
+```{r}
+#media_num <- colMeans(data_num)
+#sd_num <- apply(data_num,2,sd)
+#data_num_std <- scale(data_num,center = media_num, scale = sd_num)
 ```
