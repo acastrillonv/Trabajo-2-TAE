@@ -94,17 +94,17 @@ Se visualiza un resume de las variables categoricas
 summary(data_cat)
 ```
 
-Se visualiza si las variables categóricas poseen valores N/A
-
-```{r}
-apply(X = is.na(data_cat), MARGIN = 2, FUN = sum)
-```
-
 Se separa la variable loan_status de las demás variables categóricas.
 
 ```{r}
 Y<- subset(data_cat, select = loan_status)
 data_cat <- subset(data_cat, select = -c(loan_status))
+```
+
+Se visualiza si las variables categóricas poseen valores N/A
+
+```{r}
+apply(X = is.na(data_cat), MARGIN = 2, FUN = sum)
 ```
 
 Se observa que no hay valores N/A en las variables categóricas. A continuación, se crean las variables dummys para cada variable categorica
