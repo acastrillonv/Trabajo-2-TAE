@@ -177,15 +177,29 @@ Se unen los datos numéricos con los datos categóricos
 datos <- cbind(data_num,data_cat_dummy,Y)
 ```
 
-## División del conjunto en entrenamiento y validación
+```{r}
+summary(datos)
+```
+
+Debido a la alta cantidad de registros, se procede a usar una muestra de todo el dataset para la creación del modelo.
 
 ```{r}
 n_muestra <- dim(datos)[1]
+p <- 0.1 # proporción de datos para validación
+ix <- sample(n_muestra,size = round(n_muestra*p),
+                replace = FALSE)
+datos_muestra <- datos[ix,]
+```
+
+## División del conjunto en entrenamiento y validación
+
+```{r}
+n_muestra <- dim(datos_muestra)[1]
 p_vl <- 0.2 # proporción de datos para validación
 ix_vl <- sample(n_muestra,size = round(n_muestra*p_vl),
                 replace = FALSE)
-datos_vl <- datos[ix_vl,]
-datos_tr <- datos[-ix_vl,]
+datos_vl <- datos_muestra[ix_vl,]
+datos_tr <- datos_muestra[-ix_vl,]
 ```
 
 Hagamos una revisión de la tasa de compra en los conjuntos de entrenamiento y de validación:
@@ -231,10 +245,10 @@ ACP <- prcomp(X_tr_std, center = FALSE)
 summary(ACP)
 ```
 
-De acuerdo con lo anterior, para conservar el 92% de la variabilidad explicada en las variables, se va a trabajar con las primeras 43 componentes principales.
+De acuerdo con lo anterior, para conservar el 90% de la variabilidad explicada en las variables, se va a trabajar con las primeras 42 componentes principales.
 
 ```{r}
-X_tr_acp <- data.frame(ACP$x[,1:4])
+X_tr_acp <- data.frame(ACP$x[,1:42])
 ```
 
 ## Ajuste de un modelo de vecinos más cercanos
@@ -257,9 +271,7 @@ Matriz de confusión
 (mat_conf_tr <- table(predicciones_tr,Y_tr))
 ```
 
-
-Seleccion del K vecinos: 
-
+Seleccion del K vecinos:
 
 ```{r}
 performance_knn <- function(k,x,y){
@@ -276,9 +288,8 @@ performance_knn <- function(k,x,y){
 }
 ```
 
-
 ```{r}
-k <- 2:30
+k <- 2:20
 performance_tr <- sapply(k,performance_knn,x = X_tr_acp, y = Y_tr)
 ```
 
@@ -294,8 +305,6 @@ plot(k,performance_tr[2,], main = "Sensibilidad")
 plot(k,performance_tr[3,], main = "Especificidad")
 ```
 
-
-
 Ahora se busca el mejor k en validacion:
 
 Primero hay que realizar el preprocesamiento
@@ -309,7 +318,6 @@ Y_vl <- datos_vl$Purchase
 X_vl_std <- scale(X_vl,center = mediaXtr, scale = sdXtr)
 ```
 
-
 ```{r}
 ACP_vl <- predict(ACP, newdata= X_vl_std)
 ```
@@ -317,7 +325,6 @@ ACP_vl <- predict(ACP, newdata= X_vl_std)
 ```{r}
 X_vl_acp <- data.frame(ACP_vl$x[,1:30])
 ```
-
 
 Ahora si se puede realizar la busqueda del k en validacion.
 
@@ -335,7 +342,6 @@ performance_knn_vl <- function(k,x,y,newx,newy){
   return(resultado)
 }
 ```
-
 
 ```{r}
 k <- 2:30
