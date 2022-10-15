@@ -211,6 +211,7 @@ Se estandarizan las variables numéricas
 ```{r}
 X_tr <- subset(datos_tr,select = -loan_status)
 Y_tr <- datos_tr$loan_status
+Y_tr <- as.factor(Y_tr)
 ```
 
 ```{r}
@@ -223,15 +224,147 @@ X_tr_std <- scale(X_tr,center = media_X_tr, scale = sd_X_tr)
 
 ```{r}
 #X_tr_std <- as.data.frame(X_tr_std)
-ACP <- prcomp(X_tr_std)
+ACP <- prcomp(X_tr_std, center = FALSE)
 ```
 
 ```{r}
 summary(ACP)
 ```
 
+De acuerdo con lo anterior, para conservar el 92% de la variabilidad explicada en las variables, se va a trabajar con las primeras 43 componentes principales.
+
 ```{r}
-X_tr_acp <- data.frame(ACP$x[,1:43])
+X_tr_acp <- data.frame(ACP$x[,1:30])
 ```
 
 ## Ajuste de un modelo de vecinos más cercanos
+
+```{r}
+library(caret)
+```
+
+```{r}
+modelo_knn <- knn3(x=X_tr_acp, y = Y_tr, k = 3)
+```
+
+```{r}
+predicciones_tr <- predict(modelo_knn, newdata = X_tr_acp)
+```
+
+Matriz de confusión
+
+```{r}
+(mat_conf_tr <- table(predicciones_tr,Y_tr))
+```
+
+
+Seleccion del K vecinos: 
+
+
+```{r}
+performance_knn <- function(k,x,y){
+  modelo_knn <- knn3(x=x, y = y, k = k)
+  predicciones <- predict(modelo_knn, newdata = x, type = "class")
+  mat_conf <- table(predicciones,y)
+  accuracy <- sum(diag(mat_conf))/sum(mat_conf)
+  sensibilidad <- mat_conf[2,2]/(mat_conf[2,2]+mat_conf[1,2])
+  especificidad <-    mat_conf[1,1]/(mat_conf[1,1]+mat_conf[2,1])
+  resultado <- list(accuracy=accuracy,
+                    sensibilidad=sensibilidad,
+                    especificidad=especificidad)
+  return(resultado)
+}
+```
+
+
+```{r}
+k <- 2:30
+performance_tr <- sapply(k,performance_knn,x = X_tr_acp, y = Y_tr)
+```
+
+```{r}
+plot(k,performance_tr[1,], main = "Accuracy")
+```
+
+```{r}
+plot(k,performance_tr[2,], main = "Sensibilidad")
+```
+
+```{r}
+plot(k,performance_tr[3,], main = "Especificidad")
+```
+
+
+
+Ahora se busca el mejor k en validacion:
+
+Primero hay que realizar el preprocesamiento
+
+```{r}
+X_vl <- subset(datos_vl,select = -Purchase)
+Y_vl <- datos_vl$Purchase
+```
+
+```{r}
+X_vl_std <- scale(X_vl,center = mediaXtr, scale = sdXtr)
+```
+
+
+```{r}
+ACP_vl <- predict(ACP, newdata= X_vl_std)
+```
+
+```{r}
+X_vl_acp <- data.frame(ACP_vl$x[,1:30])
+```
+
+
+Ahora si se puede realizar la busqueda del k en validacion.
+
+```{r}
+performance_knn_vl <- function(k,x,y,newx,newy){
+  modelo_knn <- knn3(x=x, y = y, k = k)
+  predicciones <- predict(modelo_knn, newdata = newx, type = "class")
+  mat_conf <- table(predicciones,newy)
+  accuracy <- sum(diag(mat_conf))/sum(mat_conf)
+  sensibilidad <- mat_conf[2,2]/(mat_conf[2,2]+mat_conf[1,2])
+  especificidad <-    mat_conf[1,1]/(mat_conf[1,1]+mat_conf[2,1])
+  resultado <- list(accuracy=accuracy,
+                    sensibilidad=sensibilidad,
+                    especificidad=especificidad)
+  return(resultado)
+}
+```
+
+
+```{r}
+k <- 2:30
+performance_vl <- sapply(k,performance_knn_vl,x = X_tr_acp, y = Y_tr, 
+                         newx = X_vl_acp, newy = Y_vl,simplify = TRUE)
+```
+
+```{r}
+plot(k,performance_vl[1,], main = "Accuracy Validación")
+```
+
+```{r}
+plot(k,performance_vl[2,], main = "Sensibilidad Validación")
+```
+
+```{r}
+plot(k,performance_vl[3,], main = "Especificidad Validación")
+```
+
+Gráfica en el espacio ROC:
+
+```{r}
+par(pty="s")
+plot(1-unlist(performance_vl[3,]),performance_vl[2,],las = 1,
+     xlab = "1-Especificidad", ylab = "Sensibilidad",
+     xlim = c(0,1),
+     ylim = c(0,1),
+     main = "ROC para el número de vecinos",
+     sub = "Validación")
+grid()
+abline(a=0,b=1,col = "red")
+```
