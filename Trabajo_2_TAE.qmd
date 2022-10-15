@@ -234,7 +234,7 @@ summary(ACP)
 De acuerdo con lo anterior, para conservar el 92% de la variabilidad explicada en las variables, se va a trabajar con las primeras 43 componentes principales.
 
 ```{r}
-X_tr_acp <- data.frame(ACP$x[,1:30])
+X_tr_acp <- data.frame(ACP$x[,1:4])
 ```
 
 ## Ajuste de un modelo de vecinos más cercanos
@@ -248,7 +248,7 @@ modelo_knn <- knn3(x=X_tr_acp, y = Y_tr, k = 3)
 ```
 
 ```{r}
-predicciones_tr <- predict(modelo_knn, newdata = X_tr_acp)
+predicciones_tr <- predict(modelo_knn, newdata = X_tr_acp, type = "class")
 ```
 
 Matriz de confusión
