@@ -185,7 +185,7 @@ Debido a la alta cantidad de registros, se procede a usar una muestra de todo el
 
 ```{r}
 n_muestra <- dim(datos)[1]
-p <- 0.1 # proporción de datos para validación
+p <- 0.08 # proporción de datos para validación
 ix <- sample(n_muestra,size = round(n_muestra*p),
                 replace = FALSE)
 datos_muestra <- datos[ix,]
@@ -248,7 +248,7 @@ summary(ACP)
 De acuerdo con lo anterior, para conservar el 90% de la variabilidad explicada en las variables, se va a trabajar con las primeras 42 componentes principales.
 
 ```{r}
-X_tr_acp <- data.frame(ACP$x[,1:42])
+X_tr_acp <- data.frame(ACP$x[,1:35])
 ```
 
 ## Ajuste de un modelo de vecinos más cercanos
@@ -279,8 +279,8 @@ performance_knn <- function(k,x,y){
   predicciones <- predict(modelo_knn, newdata = x, type = "class")
   mat_conf <- table(predicciones,y)
   accuracy <- sum(diag(mat_conf))/sum(mat_conf)
-  sensibilidad <- mat_conf[2,2]/(mat_conf[2,2]+mat_conf[1,2])
-  especificidad <-    mat_conf[1,1]/(mat_conf[1,1]+mat_conf[2,1])
+  sensibilidad <- mat_conf[1,1]/(mat_conf[1,1]+mat_conf[2,1])
+  especificidad <-    mat_conf[2,2]/(mat_conf[2,2]+mat_conf[1,2])
   resultado <- list(accuracy=accuracy,
                     sensibilidad=sensibilidad,
                     especificidad=especificidad)
@@ -289,7 +289,7 @@ performance_knn <- function(k,x,y){
 ```
 
 ```{r}
-k <- 2:20
+k <- 2:10
 performance_tr <- sapply(k,performance_knn,x = X_tr_acp, y = Y_tr)
 ```
 
@@ -334,8 +334,8 @@ performance_knn_vl <- function(k,x,y,newx,newy){
   predicciones <- predict(modelo_knn, newdata = newx, type = "class")
   mat_conf <- table(predicciones,newy)
   accuracy <- sum(diag(mat_conf))/sum(mat_conf)
-  sensibilidad <- mat_conf[2,2]/(mat_conf[2,2]+mat_conf[1,2])
-  especificidad <-    mat_conf[1,1]/(mat_conf[1,1]+mat_conf[2,1])
+  sensibilidad <- mat_conf[1,1]/(mat_conf[1,1]+mat_conf[2,1])
+  especificidad <-    mat_conf[2,2]/(mat_conf[2,2]+mat_conf[1,2])
   resultado <- list(accuracy=accuracy,
                     sensibilidad=sensibilidad,
                     especificidad=especificidad)
