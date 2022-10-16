@@ -120,7 +120,7 @@ data_cat_dummy <- as.data.frame(predict(onehotencoding,data_cat))
 summary(data_num)
 ```
 
-Se eliminan las variables mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, por la cantidad tan elevada de valores N/A que poseen estas variables. También se borra la variable funded_amnt. 
+Se eliminan las variables mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, por la cantidad tan elevada de valores N/A que poseen estas variables. También se borra la variable funded_amnt.
 
 ```{r}
 data_num <- subset(data_num, select= -c(mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, funded_amnt))
@@ -176,7 +176,6 @@ Se unen los datos numéricos con los datos categóricos
 ```{r}
 datos <- cbind(data_num,data_cat_dummy,Y)
 ```
-
 
 Debido a la alta cantidad de registros, se procede a usar una muestra de todo el dataset para la creación del modelo.
 

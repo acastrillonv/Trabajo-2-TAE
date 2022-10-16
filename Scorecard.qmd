@@ -90,6 +90,62 @@ data_num$acc_now_delinq[is.na(data_num$acc_now_delinq)] <- 0.000000
 
 ```
 
+Boxplot para cada variable numerica
+
+```{r}
+
+impre_box <- function(data){
+  nombres <- names(data)
+  dimen <- dim(data)[2]
+  vector <- 1:dimen
+  for (variable in vector) {
+    boxplot(data[,variable], main= nombres[variable])
+  }
+}
+
+impre_box(data_num)
+```
+
+```{r}
+eliminacion_out <- function(data){
+
+  dimen <- dim(data)[2]
+  
+  if(dimen == 1){
+    vector <- c(1)  
+  }else{
+    vector <- 1:dimen
+  }
+  
+  
+  for (variable in vector){
+    
+    
+    x <- data[,variable]   
+    qnt <- quantile(x, probs=c(.25, .75), na.rm = T)
+    caps <- quantile(x, probs=c(.05, .95), na.rm = T)
+    H <- 1.5 * IQR(x, na.rm = T)
+    x[x < (qnt[1] - H)] <- caps[1]
+    x[x > (qnt[2] + H)] <- caps[2]
+    
+    data[,variable] <- x
+        
+  }
+  
+  return(data)
+
+}
+
+```
+
+```{r}
+data_num <- eliminacion_out(data_num)
+```
+
+```{r}
+impre_box(data_num)
+```
+
 ## Modificación de la variable objetivo
 
 Se crea una función para la transformación de la variable loan_status.
@@ -123,17 +179,46 @@ Se unen los datos numéricos con los datos categóricos
 datos <- cbind(data_num,data_cat,Y)
 ```
 
+```{r}
+#install.packages('ROSE')
+library(ROSE)
+```
+
+Balanceo de los datos
+
+```{r}
+datos_balanceados <- ovun.sample(loan_status ~ ., 
+                             data = datos, 
+                             method = "over")$data
+100*prop.table(table(datos_balanceados$loan_status))
+```
+
+Debido a la alta cantidad de registros, se procede a usar una muestra de todo el dataset para la creación del modelo.
+
+```{r}
+n_muestra <- dim(datos_balanceados)[1]
+p <- 0.08 # proporción de datos para el nuevo dataset
+ix <- sample(n_muestra,size = round(n_muestra*p),
+                replace = FALSE)
+datos_muestra <- datos_balanceados[ix,]
+```
+
+```{r}
+dplyr::count(datos_muestra, datos_muestra$loan_status, sort = TRUE)
+```
+
 # Scorecards
 
 ```{r}
 #install.packages('scorecard')
 library(scorecard)
+library(pander)
 ```
 
 Para la creación del scorecard, se realiza un filtrado de los datos ya procesados anteriormente, .
 
 ```{r}
-datos_sel = var_filter(datos, "loan_status", positive = 'Cumple')
+datos_sel = var_filter(datos_muestra, "loan_status", positive = 'Incumple')
 ```
 
 Ya con los datos seleccionados, se procede a la creación de los contenedores finos por variable (o en ingles fine bins).
@@ -152,6 +237,8 @@ datos_woe = woebin_ply(datos_sel, bins)
 # glm ------
 m = glm(loan_status ~ ., family = binomial(), data = datos_woe)
 
+pander(summary(m))
+
 # Select a formula-based model by AIC
 m_step = step(m, direction="both", trace=FALSE)
 
@@ -164,101 +251,44 @@ card = scorecard(bins, m)
 
 # credit score
 # Example I # only total score
-score1 = scorecard_ply(datos, card)
+score1 = scorecard_ply(datos_muestra, card)
+
+dato_fit <- fitted(m)
+
 
 # Example II # credit score for both total and each variable
-score2 = scorecard_ply(datos, card, only_total_score = FALSE)
+score2 = scorecard_ply(datos_muestra, card, only_total_score = FALSE)
 ```
 
-# EJEMPLO
-
-# load germancredit data
+Se modifican los outliers presentados en el score obtenido.
 
 ```{r}
-data("germancredit")
+
+x <- score1$score   
+qnt <- quantile(x, probs=c(.25, .75), na.rm = T)
+caps <- quantile(x, probs=c(.05, .95), na.rm = T)
+H <- 1.5 * IQR(x, na.rm = T)
+x[x < (qnt[1] - H)] <- caps[1]
+x[x > (qnt[2] + H)] <- caps[2]
+
+score1_mod <- as.data.frame(x)    
+
 ```
 
+Se observa la
+
 ```{r}
-# filter variable via missing rate, iv, identical value rate
-dt_sel = var_filter(germancredit, "creditability")
+plot(dato_fit,score1_mod$x)
 ```
 
-```{r}
-# woe binning ------
-bins = woebin(dt_sel, "creditability")
-```
+EJEMPLO
 
 ```{r}
-dt_woe = woebin_ply(dt_sel, bins)
-```
 
-```{r}
-# glm ------
-m = glm(creditability ~ ., family = binomial(), data = dt_woe)
-
-# Select a formula-based model by AIC
-m_step = step(m, direction="both", trace=FALSE)
-
-m = eval(m_step$call)
-
-# scorecard
-# Example I # creat a scorecard
-card = scorecard(bins, m)
-
-xnames = sub('_woe', '', names(coef(m))[-1])
-card2 = scorecard2(bins=bins, dt=germancredit, y='creditability', x=xnames)
-
-# credit score
-# Example I # only total score
-score1 = scorecard_ply(germancredit, card)
-
-# Example II # credit score for both total and each variable
-score2 = scorecard_ply(germancredit, card, only_total_score = FALSE)
-## End(No test)
-```
-
-# No sirve
-
-Se seleccionan las variables.
-
-```{r}
-data_num_s <- subset(data_num, select= c(annual_inc, inq_last_6mths, open_acc, pub_rec))
-data_cat_s <- subset(data_cat, select= c (term, grade, purpose, home_ownership))
-datos_s <- cbind(data_num_s,data_cat_s,datos$loan_status)
+respuesta <- as.data.frame(datos_muestra[1,])
+respuesta <- subset(respuesta, select = c(funded_amnt, int_rate, installment, annual_inc, dti, revol_bal, out_prncp, out_prncp_inv, total_pymnt, total_rec_prncp, total_rec_int, last_pymnt_amnt, term, grade, purpose, initial_list_status))
 ```
 
 ```{r}
-pgrupos <- function(valor){
-  if (valor <600000){
-    nuevo = "Entre 0 y 600000"
-  }else if ((valor >=600000) & (valor < 1200000)){
-    nuevo = "Entre 600000 y 1200000"
-  }else if ((valor >=1200000) & (valor < 1800000)){
-    nuevo = "Entre 1200000 y 1800000"
-  }else if ((valor >=1800000) & (valor < 2400000)){
-    nuevo = "Entre 1800000 y 2400000"
-  }else{
-    nuevo = "Entre 2400000 y 7500000"
-  }
-  return(nuevo)
-}
-```
-
-```{r}
-annual_inc <- data.frame(datos_s$annual_inc, datos$loan_status)
-annual_inc$grupo <- sapply(annual_inc$datos_s.annual_inc, pgrupos)
-grupos <- dplyr::count(annual_inc, annual_inc$grupo, sort = TRUE)
-grupos <- grupos[2]
-```
-
-Se crea la función para calcular el WoE.
-
-```{r}
-woe <- function(data, nombreVariable, grupo){
-  
-}
-```
-
-```{r}
-dplyr::count(annual_inc, annual_inc$grupo, sort = TRUE)
+Nuevo_score = scorecard_ply(respuesta, card)
 ```
