@@ -120,10 +120,10 @@ data_cat_dummy <- as.data.frame(predict(onehotencoding,data_cat))
 summary(data_num)
 ```
 
-Se eliminan las variables mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, por la cantidad tan elevada de valores N/A que poseen estas variables.
+Se eliminan las variables mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, por la cantidad tan elevada de valores N/A que poseen estas variables. También se borra la variable funded_amnt. 
 
 ```{r}
-data_num <- subset(data_num, select= -c(mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim))
+data_num <- subset(data_num, select= -c(mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, funded_amnt))
 ```
 
 A continuación, se completa las variables numéricas que poseean valores N/A cambiandolas por el valor de la mediana de cada atributo.
@@ -177,15 +177,12 @@ Se unen los datos numéricos con los datos categóricos
 datos <- cbind(data_num,data_cat_dummy,Y)
 ```
 
-```{r}
-summary(datos)
-```
 
 Debido a la alta cantidad de registros, se procede a usar una muestra de todo el dataset para la creación del modelo.
 
 ```{r}
 n_muestra <- dim(datos)[1]
-p <- 0.08 # proporción de datos para validación
+p <- 0.08 # proporción de datos para el nuevo dataset
 ix <- sample(n_muestra,size = round(n_muestra*p),
                 replace = FALSE)
 datos_muestra <- datos[ix,]

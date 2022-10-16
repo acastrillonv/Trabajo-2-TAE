@@ -15,38 +15,30 @@ daux<- rbind(d1,d2)
 data <- rbind(daux,d3)
 ```
 
-Descripción de los datos
+## Preprocesamiento inicial de los datos
 
-
-Se eliminan las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m,id, member_id, url, desc, zip_code, application_type, policy_code, home_ownership.
+Se eliminan las variables: dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m,id, member_id, url, desc, zip_code, application_type, policy_code.
 
 ```{r}
-data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type, member_id, policy_code, home_ownership))
+data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type, member_id, policy_code, addr_state, sub_grade, emp_title, issue_d, title))
 ```
-
 
 En el dataset tenemos variables de tipo numericas y de tipo character, para facilidad en el trabajo, se cambian las variables de tipo character a factor.
 
 ```{r}
 data$term <- as.factor(data$term)
 data$grade <- as.factor(data$grade)
-data$sub_grade <- as.factor(data$sub_grade)
-data$emp_title <- as.factor(data$emp_title)
+
 data$emp_length <- as.factor(data$emp_length)
 data$verification_status <- as.factor(data$verification_status)
-data$issue_d <- as.factor(data$issue_d)
+
 data$loan_status <- as.factor(data$loan_status)
 data$pymnt_plan <- as.factor(data$pymnt_plan)
 data$purpose <- as.factor(data$purpose)
-data$title <- as.factor(data$title)
-data$addr_state <- as.factor(data$addr_state)
+
+
 data$initial_list_status <- as.factor(data$initial_list_status)
-```
-
-Se eliminan las variables addr_state, sub_grade, emp_title, issue_d, title
-
-```{r}
-data <- subset(data,select = -c(addr_state, sub_grade, emp_title, issue_d, title))
+data$home_ownership <- as.factor(data$home_ownership)
 ```
 
 Se procede a separar las variables en numéricas, de cadena y de tipo fecha
@@ -56,11 +48,9 @@ variables_num <- sapply(data, is.numeric)
 data_num <- data[variables_num]
 variables_cat <- sapply(data, is.factor)
 data_cat <- data[variables_cat]
-data_tipoFecha <- subset(data,select= c(earliest_cr_line, last_pymnt_d, next_pymnt_d, last_credit_pull_d))
 ```
 
-
-## Análisis de Variable categóricas
+## AnálisiVariable categóricas
 
 Se separa la variable loan_status de las demás variables categóricas.
 
@@ -72,9 +62,9 @@ data_cat <- subset(data_cat, select = -c(loan_status))
 A continuación, se crean las variables dummys para cada variable categorica
 
 ```{r}
-library(caret)
-onehotencoding <- dummyVars(~.,data = data_cat)
-data_cat_dummy <- as.data.frame(predict(onehotencoding,data_cat))
+#library(caret)
+#onehotencoding <- dummyVars(~.,data = data_cat)
+#data_cat_dummy <- as.data.frame(predict(onehotencoding,data_cat))
 ```
 
 ## Análisis de Variable numéricas
@@ -100,7 +90,6 @@ data_num$acc_now_delinq[is.na(data_num$acc_now_delinq)] <- 0.000000
 
 ```
 
-
 ## Modificación de la variable objetivo
 
 Se crea una función para la transformación de la variable loan_status.
@@ -121,6 +110,7 @@ Se aplica la función creada a la variable loan_status.
 
 ```{r}
 Y$loan_status <- sapply(Y$loan_status,transformacion_varialeObjetivo)
+Y$loan_status <- as.factor(Y$loan_status)
 ```
 
 ```{r}
@@ -130,5 +120,145 @@ dplyr::count(Y, Y$loan_status, sort = TRUE)
 Se unen los datos numéricos con los datos categóricos
 
 ```{r}
-datos <- cbind(data_num,data_cat_dummy,Y)
+datos <- cbind(data_num,data_cat,Y)
+```
+
+# Scorecards
+
+```{r}
+#install.packages('scorecard')
+library(scorecard)
+```
+
+Para la creación del scorecard, se realiza un filtrado de los datos ya procesados anteriormente, .
+
+```{r}
+datos_sel = var_filter(datos, "loan_status", positive = 'Cumple')
+```
+
+Ya con los datos seleccionados, se procede a la creación de los contenedores finos por variable (o en ingles fine bins).
+
+```{r}
+bins = woebin(datos_sel, "loan_status", positive = '1')
+```
+
+A continuación se obtienen los woe o bin en función de la información de agrupamiento generada anteriormente.
+
+```{r}
+datos_woe = woebin_ply(datos_sel, bins)
+```
+
+```{r}
+# glm ------
+m = glm(loan_status ~ ., family = binomial(), data = datos_woe)
+
+# Select a formula-based model by AIC
+m_step = step(m, direction="both", trace=FALSE)
+
+m = eval(m_step$call)
+
+# scorecard
+# Example I # creat a scorecard
+card = scorecard(bins, m)
+
+
+# credit score
+# Example I # only total score
+score1 = scorecard_ply(datos, card)
+
+# Example II # credit score for both total and each variable
+score2 = scorecard_ply(datos, card, only_total_score = FALSE)
+```
+
+# EJEMPLO
+
+# load germancredit data
+
+```{r}
+data("germancredit")
+```
+
+```{r}
+# filter variable via missing rate, iv, identical value rate
+dt_sel = var_filter(germancredit, "creditability")
+```
+
+```{r}
+# woe binning ------
+bins = woebin(dt_sel, "creditability")
+```
+
+```{r}
+dt_woe = woebin_ply(dt_sel, bins)
+```
+
+```{r}
+# glm ------
+m = glm(creditability ~ ., family = binomial(), data = dt_woe)
+
+# Select a formula-based model by AIC
+m_step = step(m, direction="both", trace=FALSE)
+
+m = eval(m_step$call)
+
+# scorecard
+# Example I # creat a scorecard
+card = scorecard(bins, m)
+
+xnames = sub('_woe', '', names(coef(m))[-1])
+card2 = scorecard2(bins=bins, dt=germancredit, y='creditability', x=xnames)
+
+# credit score
+# Example I # only total score
+score1 = scorecard_ply(germancredit, card)
+
+# Example II # credit score for both total and each variable
+score2 = scorecard_ply(germancredit, card, only_total_score = FALSE)
+## End(No test)
+```
+
+# No sirve
+
+Se seleccionan las variables.
+
+```{r}
+data_num_s <- subset(data_num, select= c(annual_inc, inq_last_6mths, open_acc, pub_rec))
+data_cat_s <- subset(data_cat, select= c (term, grade, purpose, home_ownership))
+datos_s <- cbind(data_num_s,data_cat_s,datos$loan_status)
+```
+
+```{r}
+pgrupos <- function(valor){
+  if (valor <600000){
+    nuevo = "Entre 0 y 600000"
+  }else if ((valor >=600000) & (valor < 1200000)){
+    nuevo = "Entre 600000 y 1200000"
+  }else if ((valor >=1200000) & (valor < 1800000)){
+    nuevo = "Entre 1200000 y 1800000"
+  }else if ((valor >=1800000) & (valor < 2400000)){
+    nuevo = "Entre 1800000 y 2400000"
+  }else{
+    nuevo = "Entre 2400000 y 7500000"
+  }
+  return(nuevo)
+}
+```
+
+```{r}
+annual_inc <- data.frame(datos_s$annual_inc, datos$loan_status)
+annual_inc$grupo <- sapply(annual_inc$datos_s.annual_inc, pgrupos)
+grupos <- dplyr::count(annual_inc, annual_inc$grupo, sort = TRUE)
+grupos <- grupos[2]
+```
+
+Se crea la función para calcular el WoE.
+
+```{r}
+woe <- function(data, nombreVariable, grupo){
+  
+}
+```
+
+```{r}
+dplyr::count(annual_inc, annual_inc$grupo, sort = TRUE)
 ```
