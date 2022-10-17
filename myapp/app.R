@@ -15,6 +15,7 @@ ui <- fluidPage(# App title ----
                 sidebarLayout(
                   # Sidebar panel for inputs ----
                   sidebarPanel(
+                    
                     div(h2("Ingresa tus datos",align='center')),
                     div(
                       textInput("loan_amnt", h4("Monto del préstamo"), value = 0),
@@ -102,19 +103,19 @@ ui <- fluidPage(# App title ----
                       align='center'
                     )
                     
-                  ),
+                    ,width = 6),
                   
                   # Main panel for displaying outputs ----
                   mainPanel(div(h2("Tu puntaje", align='center')),
                             
                             # Output:
-                            verbatimTextOutput("Score"),
+                            uiOutput("Score"),
                             style='position: fixed;right: 10px;top: 38%;')
                 ))
 
 server <- function(input, output) {
   
-  output$Score <- renderPrint({
+  output$Score <- renderUI({
     if (input$Reset) {
       NULL
     } else if (input$Calculate) {
@@ -277,8 +278,9 @@ server <- function(input, output) {
       }
       
       Nuevo_score = scorecard_ply(respuesta, card)
+      Valor <- toString(Nuevo_score)
+      Valor
       
-      print(Nuevo_score)
     } else{
       NULL
     }
