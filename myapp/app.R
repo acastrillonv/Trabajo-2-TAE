@@ -106,11 +106,11 @@ ui <- fluidPage(# App title ----
                     ,width = 6),
                   
                   # Main panel for displaying outputs ----
-                  mainPanel(div(h2("Tu puntaje", align='center')),
+                  mainPanel(h2("Tu puntaje", align='center'),
                             
                             # Output:
-                            uiOutput("Score"),
-                            style='position: fixed;right: 10px;top: 38%;')
+                            h1(uiOutput("Score",align='center')),
+                            style='position: fixed;right: 10px;top: 25%;')
                 ))
 
 server <- function(input, output) {
