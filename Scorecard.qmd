@@ -286,7 +286,6 @@ EJEMPLO
 ```{r}
 
 respuesta <- as.data.frame(datos_muestra[1,])
-respuesta <- subset(respuesta, select = c(funded_amnt, int_rate, installment, annual_inc, dti, revol_bal, out_prncp, out_prncp_inv, total_pymnt, total_rec_prncp, total_rec_int, last_pymnt_amnt, term, grade, purpose, initial_list_status))
 ```
 
 ```{r}
