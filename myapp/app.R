@@ -9,41 +9,41 @@ load("datos_muestra.RData", verbose = TRUE)
 
 # See above for the definitions of ui and server
 ui <- fluidPage(# App title ----
-                titlePanel("CALCULATE YOUR SCORECARD!"),
+                titlePanel(title = h1("Calcula tu Scorecard!",align='center'),windowTitle = 'Calculadora Scorecard'),
                 
                 # Sidebar layout with input and output definitions ----
                 sidebarLayout(
                   # Sidebar panel for inputs ----
                   sidebarPanel(
-                    div(h4("INPUT YOUR DATA")),
+                    div(h2("Ingresa tus datos",align='center')),
                     div(
-                      textInput("loan_amnt", h6("loan_amnt"), value = 0),
-                      textInput("funded_amnt", h6("funded_amnt"), value = 0),
-                      textInput("funded_amnt_inv", h6("funded_amnt_inv"), value = 0),
-                      textInput("int_rate", h6("int_rate"), value = 0),
-                      textInput("installment", h6("installment"), value = 0),
-                      textInput("annual_inc", h6("annual_inc"), value = 0),
-                      textInput("dti", h6("dti"), value = 0),
-                      textInput("open_acc", h6("open_acc"), value = 0),
-                      textInput("revol_bal", h6("revol_bal"), value = 0),
-                      textInput("revol_util", h6("revol_util"), value = 0),
-                      textInput("out_prncp", h6("out_prncp"), value = 0),
-                      textInput("out_prncp_inv", h6("out_prncp_inv"), value = 0),
-                      textInput("total_pymnt", h6("total_pymnt"), value = 0),
-                      textInput("total_pymnt_inv", h6("total_pymnt_inv"), value = 0),
-                      textInput("total_rec_prncp", h6("total_rec_prncp"), value = 0),
-                      textInput("total_rec_int", h6("total_rec_int"), value = 0),
-                      textInput("last_pymnt_amnt", h6("last_pymnt_amnt"), value = 0),
+                      textInput("loan_amnt", h4("Monto del préstamo"), value = 0),
+                      textInput("funded_amnt", h4("Cantidad total comprometida con el préstamo"), value = 0),
+                      textInput("funded_amnt_inv", h4("Monto total invertido por los inversionistas para el préstamo"), value = 0),
+                      textInput("int_rate", h4("Tasa de interés del préstamo"), value = 0),
+                      textInput("installment", h4("Cuota mensual del prestatario"), value = 0),
+                      textInput("annual_inc", h4("Ingresos anuales declarados por el prestatario"), value = 0),
+                      textInput("dti", h4("DTI"), value = 0),
+                      textInput("open_acc", h4("Número de operaciones abiertas en los ultimos 6 meses"), value = 0),
+                      textInput("revol_bal", h4("Saldo rotatorio de crédito total"), value = 0),
+                      textInput("revol_util", h4("Saldo utilizado de préstamo disponible"), value = 0),
+                      textInput("out_prncp", h4("Capital restante pendiente por el monto total financiado"), value = 0),
+                      textInput("out_prncp_inv", h4("Capital pendiente restante por parte del monto total financiado por los inversores"), value = 0),
+                      textInput("total_pymnt", h4("Pagos recibidos hasta la fecha por el monto total financiado"), value = 0),
+                      textInput("total_pymnt_inv", h4("Pagos recibidos hasta la fecha por parte del monto total financiado por los inversores"), value = 0),
+                      textInput("total_rec_prncp", h4("Capital recibido hasta la fecha"), value = 0),
+                      textInput("total_rec_int", h4("Intereses recibidos hasta la fecha"), value = 0),
+                      textInput("last_pymnt_amnt", h4("Valor último pago recibido"), value = 0),
                       selectInput(
                         "term",
-                        h6("term"),
-                        choices = list("36 months" = "36 months" ,
-                                       "60 months" = "60 months"),
+                        h4("Número de cuotas"),
+                        choices = list("36 cuotas" = "36 months" ,
+                                       "60 cuotas" = "60 months"),
                         selected = "36 months"
                       ),
                       selectInput(
                         "grade",
-                        h6("grade"),
+                        h4("Grado de préstamo"),
                         choices = list(
                           "A" = "A" ,
                           "B" = "B",
@@ -57,55 +57,59 @@ ui <- fluidPage(# App title ----
                       ),
                       selectInput(
                         "verification_status",
-                        h6("verification_status"),
+                        h4("Ingresos o fuente de ingresos verificada"),
                         choices = list(
-                          "Verified" = "Verified" ,
-                          "Source Verified" = "Source Verified",
-                          "Not Verified" = "Not Verified"
+                          "Verificada" = "Verified" ,
+                          "Ingresos verificados" = "Source Verified",
+                          "No verificada" = "Not Verified"
                         ),
                         selected = "Verified"
                       ),
                       
                       selectInput(
                         "purpose",
-                        h6("purpose"),
+                        h4("Motivo préstamo"),
                         choices = list(
-                          "debt_consolidation" = "debt_consolidation" ,
-                          "credit_card" = "credit_card",
-                          "home_improvement" = "home_improvement",
-                          "other" = "other",
-                          "major_purchase" = "major_purchase",
-                          "small_business" = "small_business",
-                          "car" = "car",
-                          "medical" = "medical",
-                          "moving" = "moving",
-                          "vacation" = "vacation",
-                          "wedding" = "wedding",
-                          "house" = "house",
-                          "educational" = "educational",
-                          "renewable_energy" = "renewable_energy"
+                          "Deuda" = "debt_consolidation" ,
+                          "Tarjeta de crédito" = "credit_card",
+                          "Remodelacion hogar" = "home_improvement",
+                          "Otro" = "other",
+                          "Compra grande" = "major_purchase",
+                          "Pequeña empresa" = "small_business",
+                          "Carro" = "car",
+                          "Medinal" = "medical",
+                          "Mudanza" = "moving",
+                          "Vacaciones" = "vacation",
+                          "Matrimonio" = "wedding",
+                          "Casa" = "house",
+                          "Educacion" = "educational",
+                          "Energía renovable" = "renewable_energy"
                         ),
                         selected = "debt_consolidation"
                       ),
                       selectInput(
                         "initial_list_status",
-                        h6("initial_list_status"),
-                        choices = list("f" = "f" ,
-                                       "w" = "w"),
+                        h4("Estado de cotización del préstamo"),
+                        choices = list("F" = "f" ,
+                                       "W" = "w"),
                         selected = "f"
-                      ),
+                      )
                     ),
                     br(),
-                    actionButton("Calculate", label = "Calculate"),
-                    actionButton("Reset", label = "Clear"),
+                    div(
+                      actionButton("Calculate", label = h4("Calcular",style='color:green')),
+                      actionButton("Reset", label = h4("Limpiar",style='color:blue')),
+                      align='center'
+                    )
                     
                   ),
                   
                   # Main panel for displaying outputs ----
-                  mainPanel(div(h1("YOUR SCORE")),
+                  mainPanel(div(h2("Tu puntaje", align='center')),
                             
                             # Output:
-                            verbatimTextOutput("Score"))
+                            verbatimTextOutput("Score"),
+                            style='position: fixed;right: 10px;top: 38%;')
                 ))
 
 server <- function(input, output) {
@@ -274,7 +278,6 @@ server <- function(input, output) {
       
       Nuevo_score = scorecard_ply(respuesta, card)
       
-      print(sapply(respuesta, class))
       print(Nuevo_score)
     } else{
       NULL
