@@ -1,0 +1,11 @@
+name: myapp
+title:
+username:
+account: andres-castrillon-velasquez
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7333692
+bundleId: 6412470
+url: https://andres-castrillon-velasquez.shinyapps.io/myapp/
+when: 1666038051.58053
+lastSyncTime: 1666038051.58053

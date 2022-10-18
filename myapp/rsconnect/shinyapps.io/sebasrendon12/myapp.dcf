@@ -1,0 +1,13 @@
+name: myapp
+title: myapp
+username:
+account: sebasrendon12
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7336679
+bundleId: 6413439
+url: https://sebasrendon12.shinyapps.io/myapp/
+when: 1666063761.84782
+lastSyncTime: 1666063761.84782
+asMultiple: FALSE
+asStatic: FALSE
