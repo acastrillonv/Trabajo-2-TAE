@@ -79,7 +79,7 @@ ui <- fluidPage(# App title ----
                           "Compra grande" = "major_purchase",
                           "Pequeña empresa" = "small_business",
                           "Carro" = "car",
-                          "Medinal" = "medical",
+                          "Medicina" = "medical",
                           "Mudanza" = "moving",
                           "Vacaciones" = "vacation",
                           "Matrimonio" = "wedding",

@@ -232,7 +232,7 @@ Modelo de riesgo de crédito
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tabla 1. Tabla del conteo de la variable loan_status"</code></pre>
+<pre><code>Tabla 1. Tabla del conteo de la variable loan_status</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -269,7 +269,7 @@ Modelo de riesgo de crédito
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tabla 2. Tabla del nuevo conteo de la variable loan_status"</code></pre>
+<pre><code>Tabla 2. Tabla del nuevo conteo de la variable loan_status</code></pre>
 </div>
 </div>
 <p>Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo.</p>
@@ -281,22 +281,7 @@ Modelo de riesgo de crédito
 <section id="scorecards" class="level1">
 <h1>Scorecards</h1>
 <p>Para la creación del scorecard, se utiliza un liberia llamada “Scorecard”, la cual permite mediante sus funciones poder crear el modelo de manera óptima. Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función “var_filter”. Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Y luego, se obtienen los valores woe para cada registro por cada una de sus variables.</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[INFO] filtering variables ... </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[INFO] creating woe binning ... 
-[INFO] Binning on 73399 rows and 23 columns in 00:00:16 </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[INFO] converting into woe values ... </code></pre>
-</div>
-</div>
+
 <p>Ya por último, se obtiene el objeto denominado <strong>“Card”</strong>, el cual nos permite obtener el score de acuerdo a los valores de las variables.</p>
 <div class="cell">
 
@@ -314,7 +299,7 @@ Modelo de riesgo de crédito
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Figura 27. Curva de score con respecto a la probabilidad de incumpliemto"</code></pre>
+<pre><code>Figura 27. Curva de score con respecto a la probabilidad de incumpliemto</code></pre>
 </div>
 </div>
 <p>En Figura 27, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.</p>
@@ -525,7 +510,7 @@ Modelo de riesgo de crédito
 </div>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tabla 3. Tabla de resumen de las variables usadas en el modelo"</code></pre>
+<pre><code>Tabla 3. Tabla de resumen de las variables usadas en el modelo</code></pre>
 </div>
 </div>
 <p>Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(&gt;|z|).</p>
