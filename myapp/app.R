@@ -100,7 +100,7 @@ ui <- fluidPage(# App title ----
                     br(),
                     div(
                       actionButton("Calculate", label = h4("Calcular",style='color:green')),
-                      actionButton("refresh", label = h4("Limpiar",style='color:blue'),onclick ="window.open('https://andres-castrillon-velasquez.shinyapps.io/myapp/', '_self')"),
+                      actionButton("refresh", label = h4("Limpiar",style='color:blue'),onclick ="window.open('https://sebasrendon12.shinyapps.io/myapp2/', '_self')"),
                       align='center'
                     )
                     
