@@ -3,6 +3,7 @@ library(scorecard)
 library(pander)
 library(kableExtra)
 library(sjmisc)
+library(rsconnect)
 
 load("card.RData", verbose = TRUE)
 load("datos_muestra.RData", verbose = TRUE)
@@ -106,11 +107,13 @@ ui <- fluidPage(# App title ----
                     ,width = 6),
                   
                   # Main panel for displaying outputs ----
-                  mainPanel(h2("Tu puntaje", align='center'),
+                  mainPanel(h2("Tu puntaje es", align='center'),
+                            style='position: fixed;right: 10px;top: 25%;',
                             
                             # Output:
-                            h1(uiOutput("Score",align='center')),
-                            style='position: fixed;right: 10px;top: 25%;')
+                            div(h1(uiOutput("Score",align='center'))),
+                            img(src = "scorecard.png", height = 150, width = 700,align='right')
+                            )
                 ))
 
 server <- function(input, output) {
@@ -278,8 +281,7 @@ server <- function(input, output) {
       }
       
       Nuevo_score = scorecard_ply(respuesta, card)
-      Valor <- toString(Nuevo_score)
-      Valor
+      Nuevo_score
       
     } else{
       NULL
