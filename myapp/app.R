@@ -100,7 +100,7 @@ ui <- fluidPage(# App title ----
                     br(),
                     div(
                       actionButton("Calculate", label = h4("Calcular",style='color:green')),
-                      actionButton("Reset", label = h4("Limpiar",style='color:blue')),
+                      actionButton("refresh", label = h4("Limpiar",style='color:blue')),
                       align='center'
                     )
                     
@@ -108,19 +108,20 @@ ui <- fluidPage(# App title ----
                   
                   # Main panel for displaying outputs ----
                   mainPanel(h2("Tu puntaje es", align='center'),
-                            style='position: fixed;right: 10px;top: 25%;',
+                            style='position: fixed;right: 1VH;top: 25%; width:50%;',
                             
                             # Output:
                             div(h1(uiOutput("Score",align='center'))),
-                            img(src = "scorecard.png", height = 150, width = 700,align='right')
+                            div(img(src = "scorecard.png", height = 150, width = 650,align='center'),align='center'),
+                            div(h3("Este es el score promedio de una muestra de la poblacion: 428",align='center'))
                             )
                 ))
 
 server <- function(input, output) {
-  
+
   output$Score <- renderUI({
-    if (input$Reset) {
-      NULL
+    if (input$refresh) {
+      0
     } else if (input$Calculate) {
       respuesta <- data.frame(
         loan_amnt=input$loan_amnt,
@@ -284,9 +285,16 @@ server <- function(input, output) {
       Nuevo_score
       
     } else{
-      NULL
+      0
     }
   })
+  
+  refresh <- function() {
+    fxn <- "refresh"
+    params <- list()
+    jsFuncHelper(fxn, params)
+  }
 }
 
 shinyApp(ui = ui, server = server)
+
