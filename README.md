@@ -2,6 +2,7 @@
 
 ## Link del video en Youtube: https://youtu.be/pWpvk7BuvP4
 ## Link de aplicación: https://sebasrendon12.shinyapps.io/myapp2/
+## Link del Blog: https://acastrillonv.github.io/Trabajo-2-TAE/
 
 
 El reto en este trabajo es crear un modelo para predecir la probabilidad de que un individuo incumpla sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito.
