@@ -1,5 +1,9 @@
 # Trabajo-2-TAE
 
+## Link del video en Youtube: https://youtu.be/pWpvk7BuvP4
+## Link de aplicación: https://sebasrendon12.shinyapps.io/myapp2/
+
+
 El reto en este trabajo es crear un modelo para predecir la probabilidad de que un individuo incumpla sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito.
 
 La variable default (incumplimiento de las obligaciones financieras) está dada en la columna loan_status del archivo adjunto. Se considera que un cliente incumple si está en default o si tiene un atraso de más de 30 días en su pago (en Colombia es usual considerar el default como un atraso de 90 días para la mayoría de los productos de consumo).
@@ -25,3 +29,4 @@ Posterior a la entrega del trabajo, se enviará una encuesta donde los integrant
 
 Referencia útil
 Se adjuntan unas referencias útiles, que no necesariamente reflejan el trabajo de hacer modelos de riesgo como se hace en un buró de crédito o en un banco. En particular, se pueden (y se hace) crear scorecards con variables continuas.
+
