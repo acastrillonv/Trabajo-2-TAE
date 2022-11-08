@@ -121,33 +121,6 @@ ul.task-list{list-style: none;}
 <div class="cell">
 
 </div>
-<p>Al realizar lo anterior, identificamos la modificación los valores outliers en los siguientes boxplots para cada variable numérica.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-7.png" class="img-fluid" width="672"></p>
-</div>
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-8.png" class="img-fluid" width="672"></p>
-</div>
-</div>
 </section>
 <section id="modificación-de-la-variable-objetivo" class="level3">
 <h3 class="anchored" data-anchor-id="modificación-de-la-variable-objetivo">2.2- Modificación de la variable objetivo</h3>
@@ -192,15 +165,13 @@ ul.task-list{list-style: none;}
 
 </div>
 </div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tabla 1. Tabla del conteo de la variable loan_status"</code></pre>
-</div>
-</div>
+<center>
+<strong>Tabla 1.</strong> Tabla del conteo de la variable loan_status
+</center>
 <div class="cell">
 
 </div>
-<p>Debido al desbalanceo que se presenta en los registros, se utiliza una función de la librería ROSE, que permite realizar un balanceo en el dataset,. En la Tabla 2, se observa lo anterior:</p>
+<p>Debido al desbalanceo que se presenta en los registros, se utiliza la “ovun.sample” de la librería ROSE. Esta función permite crear “muestras posiblemente equilibradas mediante ejemplos minoritarios de sobremuestreo aleatorio, ejemplos mayoritarios de submuestreo o una combinación de sobremuestreo y submuestreo” (Lunardon, Menardi y Torelli, 2022). En la Tabla 2, se observa lo anterior:</p>
 <div class="cell">
 
 </div>
@@ -217,43 +188,40 @@ ul.task-list{list-style: none;}
  </thead>
 <tbody>
   <tr>
-   <td style="text-align:left;"> Incumple </td>
-   <td style="text-align:right;"> 458935 </td>
-  </tr>
-  <tr>
    <td style="text-align:left;"> Cumple </td>
    <td style="text-align:right;"> 458553 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Incumple </td>
+   <td style="text-align:right;"> 458543 </td>
   </tr>
 </tbody>
 </table>
 
 </div>
 </div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tabla 2. Tabla del nuevo conteo de la variable loan_status"</code></pre>
-</div>
-</div>
-<p>Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo.</p>
+<center>
+<strong>Tabla 2.</strong> Tabla del nuevo conteo de la variable loan_status
+</center>
+<p>Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo, esto debido a la capacidad de cómputo que requiere el modelo para poder trabajar con toda esta cantidad de observaciones.</p>
 <div class="cell">
 
 </div>
 </section>
 </section>
-<section id="scorecards" class="level1">
-<h1>Scorecards</h1>
-<p>Para la creación del scorecard, se utiliza un liberia llamada “Scorecard”, la cual permite mediante sus funciones poder crear el modelo de manera óptima. Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función “var_filter”. Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Y luego, se obtienen los valores woe para cada registro por cada una de sus variables.</p>
+<section id="scorecards" class="level2">
+<h2 class="anchored" data-anchor-id="scorecards">3- Scorecards</h2>
+<p>Para la creación del scorecard, se utiliza un liberia llamada “Scorecard”, la cual permite mediante sus funciones poder crear el modelo de riesgo de crédito de manera óptima y eficiente con las funciones que ya vienen integradas.</p>
+<p>Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función “var_filter”. Esta función permite. filtrar la información de acuerdo a condiciones específicas, como el valor de la información, la tasa de faltantes, la tasa de valores idénticos, entre otras condiciones.</p>
+<p>Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Esto se realiza con la función woebin, la cual, genera un agrupamiento óptimo para variables numéricas, de factores y categóricas utilizando métodos que incluyen la segmentación en forma de árbol o la combinación de chi-cuadrado.</p>
+<p>Y luego, se obtienen los valores woe para cada registro por cada una de sus variables, utilizando los bins y los datos filtrados previamente ya calculados.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[INFO] filtering variables ... </code></pre>
 </div>
-</div>
-<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[INFO] creating woe binning ... </code></pre>
 </div>
-</div>
-<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[INFO] converting into woe values ... </code></pre>
 </div>
@@ -262,26 +230,8 @@ ul.task-list{list-style: none;}
 <div class="cell">
 
 </div>
-<div class="cell">
-
-</div>
-<section id="analisis-del-modelo-obtenido" class="level2">
-<h2 class="anchored" data-anchor-id="analisis-del-modelo-obtenido">Analisis del modelo obtenido</h2>
-<p>Una vez obtenido el modelo que genera el score, se analiza con la siguiente gráfica el score asociado con la probabilidad de incumplimiento de pago del cliente.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Figura 27. Curva de score con respecto a la probabilidad de incumpliemto"</code></pre>
-</div>
-</div>
-<p>En Figura 27, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.</p>
-</section>
-<section id="análisis-de-las-variables-empledas-en-el-modelo" class="level2">
-<h2 class="anchored" data-anchor-id="análisis-de-las-variables-empledas-en-el-modelo">Análisis de las variables empledas en el modelo</h2>
+<section id="análisis-de-las-variables-empledas-en-el-modelo" class="level3">
+<h3 class="anchored" data-anchor-id="análisis-de-las-variables-empledas-en-el-modelo">3.1- Análisis de las variables empledas en el modelo</h3>
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-sm table-striped">
@@ -304,66 +254,66 @@ ul.task-list{list-style: none;}
 <tbody>
 <tr class="odd">
 <td style="text-align: center;"><strong>(Intercept)</strong></td>
-<td style="text-align: center;">0.01217</td>
-<td style="text-align: center;">0.007717</td>
-<td style="text-align: center;">1.577</td>
-<td style="text-align: center;">0.1149</td>
+<td style="text-align: center;">0.002422</td>
+<td style="text-align: center;">0.007715</td>
+<td style="text-align: center;">0.314</td>
+<td style="text-align: center;">0.7535</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>loan_amnt_woe</strong></td>
-<td style="text-align: center;">0.2595</td>
-<td style="text-align: center;">0.08791</td>
-<td style="text-align: center;">2.952</td>
-<td style="text-align: center;">0.00316</td>
+<td style="text-align: center;">0.113</td>
+<td style="text-align: center;">0.1033</td>
+<td style="text-align: center;">1.094</td>
+<td style="text-align: center;">0.274</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>int_rate_woe</strong></td>
-<td style="text-align: center;">0.8985</td>
-<td style="text-align: center;">0.01662</td>
-<td style="text-align: center;">54.07</td>
+<td style="text-align: center;">0.9118</td>
+<td style="text-align: center;">0.0167</td>
+<td style="text-align: center;">54.61</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>installment_woe</strong></td>
-<td style="text-align: center;">0.6744</td>
-<td style="text-align: center;">0.0739</td>
-<td style="text-align: center;">9.125</td>
-<td style="text-align: center;">7.168e-20</td>
+<td style="text-align: center;">0.7508</td>
+<td style="text-align: center;">0.08838</td>
+<td style="text-align: center;">8.495</td>
+<td style="text-align: center;">1.971e-17</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>annual_inc_woe</strong></td>
-<td style="text-align: center;">1.654</td>
-<td style="text-align: center;">0.07113</td>
-<td style="text-align: center;">23.25</td>
-<td style="text-align: center;">1.274e-119</td>
+<td style="text-align: center;">1.551</td>
+<td style="text-align: center;">0.07067</td>
+<td style="text-align: center;">21.94</td>
+<td style="text-align: center;">9.963e-107</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>open_acc_woe</strong></td>
-<td style="text-align: center;">0.9795</td>
-<td style="text-align: center;">0.05965</td>
-<td style="text-align: center;">16.42</td>
-<td style="text-align: center;">1.336e-60</td>
+<td style="text-align: center;">0.9628</td>
+<td style="text-align: center;">0.05942</td>
+<td style="text-align: center;">16.2</td>
+<td style="text-align: center;">4.906e-59</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>term_woe</strong></td>
-<td style="text-align: center;">0.03798</td>
-<td style="text-align: center;">0.0355</td>
-<td style="text-align: center;">1.07</td>
-<td style="text-align: center;">0.2847</td>
+<td style="text-align: center;">0.02363</td>
+<td style="text-align: center;">0.03631</td>
+<td style="text-align: center;">0.6508</td>
+<td style="text-align: center;">0.5152</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>verification_status_woe</strong></td>
-<td style="text-align: center;">0.4574</td>
-<td style="text-align: center;">0.03891</td>
-<td style="text-align: center;">11.75</td>
-<td style="text-align: center;">6.705e-32</td>
+<td style="text-align: center;">0.4272</td>
+<td style="text-align: center;">0.04018</td>
+<td style="text-align: center;">10.63</td>
+<td style="text-align: center;">2.11e-26</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>purpose_woe</strong></td>
-<td style="text-align: center;">0.3075</td>
-<td style="text-align: center;">0.06864</td>
-<td style="text-align: center;">4.48</td>
-<td style="text-align: center;">7.459e-06</td>
+<td style="text-align: center;">0.3982</td>
+<td style="text-align: center;">0.06987</td>
+<td style="text-align: center;">5.699</td>
+<td style="text-align: center;">1.202e-08</td>
 </tr>
 </tbody>
 </table>
@@ -376,36 +326,51 @@ ul.task-list{list-style: none;}
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">Null deviance:</td>
-<td style="text-align: center;">101750 on 73398 degrees of freedom</td>
+<td style="text-align: center;">101709 on 73367 degrees of freedom</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">Residual deviance:</td>
-<td style="text-align: center;">95371 on 73390 degrees of freedom</td>
+<td style="text-align: center;">95409 on 73359 degrees of freedom</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<center>
+<strong>Tabla 3.</strong> Tabla de resumen de las variables usadas en el modelo
+</center>
+<p>Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(&gt;|z|).</p>
+<p>Podemos notar que las variables cuyo valor p son mayor a 0.05, no son de importancia para el modelo, estas son “loan_amnt” y “term”. A continuación, se eliminan dichas variables, y se vuelve a crear el modelo.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "Tabla 3. Tabla de resumen de las variables usadas en el modelo"</code></pre>
+<pre><code>[INFO] creating woe binning ... </code></pre>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[INFO] converting into woe values ... </code></pre>
 </div>
-<p>Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(&gt;|z|).</p>
-<div class="cell">
-
-</div>
-<div class="cell">
-
 </div>
 </section>
+<section id="análisis-del-modelo-obtenido" class="level3">
+<h3 class="anchored" data-anchor-id="análisis-del-modelo-obtenido">3.2- Análisis del modelo obtenido</h3>
+<p>Una vez obtenido el modelo que genera el score, se analiza con la siguiente gráfica el score asociado con la probabilidad de incumplimiento de pago del cliente.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<center>
+<strong>Figura 1.</strong> Curva de score con respecto a la probabilidad de incumpliemto
+</center>
+<p>En Figura 1, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.</p>
+</section>
+</section>
 <section id="referencias" class="level2">
-<h2 class="anchored" data-anchor-id="referencias">Referencias</h2>
+<h2 class="anchored" data-anchor-id="referencias">4- Referencias</h2>
 <ul>
 <li><p>Ng Yong Kad. (2020). Credit Scoring Development Using R. 2022, 15 de ocubre 2022, de rpubs. Sitio web: https://rpubs.com/ngyongkad/scorecard</p></li>
 <li><p>CRAN. (2022). Package ‘scorecard’. 2022, 15 de ocubre 2022, de Package ‘scorecard’. Sitio web: https://cran.r-project.org/web/packages/scorecard/scorecard.pdf</p></li>
+<li><p>Lunardon N., Menardi G. &amp; Torelli N.. (2022). Package ‘ROSE’. 2022, noviembre 5, de cran.r. Sitio web: https://cran.r-project.org/web/packages/ROSE/ROSE.pdf</p></li>
 </ul>
-</section>
 </section>
 
 </main>
