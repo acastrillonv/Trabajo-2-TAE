@@ -1,5 +1,5 @@
 ---
-title: "<center> Modelo de riesgo de crédito</center>"
+title: "Modelo de riesgo de crédito"
 author: "Valentina Vanegas Castaño <br> Edwar Jose Londoño Correa <br> Andres Castrillón Velasquez <br> Diego Andres Chavarria Riaño <br> Sebastian Rendon Arteaga"
 format: html
 editor: visual
@@ -39,9 +39,11 @@ Inicialmente se eliminan variables que poseen un gran número o en su totalidad 
 
 Teniendo en cuenta lo anterior, se eliminan las variables : dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m,id, member_id, url, desc, zip_code, application_type, policy_code, mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim.
 
+También se eliminan las variables: funded_amnt, funded_amnt_inv, dti, delinq_2yrs, revol_bal, revol_util, total_acc, out_prncp, out_prncp_inv, total_pymnt, total_pymnt_inv, total_rec_prncp, total_rec_int, total_rec_late_fee, recoveries, collection_recovery_fee, last_pymnt_amnt, collections_12_mths_ex_med, grade, pymnt_plan, initial_list_status, ya que son variables que no se pueden utilizar para predecir si a una persona que se le va a otorgar el crédito, cumpla o no con este.
+
 ```{r}
 # Se eliminan algunas variables
-data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type, member_id, policy_code, addr_state, sub_grade, emp_title, issue_d, title, mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim))
+data <- subset(data,select = -c(dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m, id, url, desc, zip_code, application_type, member_id, policy_code, addr_state, sub_grade, emp_title, issue_d, title, mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim, funded_amnt, funded_amnt_inv, dti, delinq_2yrs, revol_bal, revol_util, total_acc, out_prncp, out_prncp_inv, total_pymnt, total_pymnt_inv, total_rec_prncp, total_rec_int, total_rec_late_fee,  recoveries, collection_recovery_fee, last_pymnt_amnt, collections_12_mths_ex_med, grade, pymnt_plan, initial_list_status))
 ```
 
 Adicionalmente, en el dataset tenemos variables de tipo numéricas y de tipo character, para facilidad en el trabajo, se cambian las variables de tipo character a factor.
@@ -49,13 +51,10 @@ Adicionalmente, en el dataset tenemos variables de tipo numéricas y de tipo cha
 ```{r}
 # Se transforman las variables de tipo character a factor.
 data$term <- as.factor(data$term)
-data$grade <- as.factor(data$grade)
 data$emp_length <- as.factor(data$emp_length)
 data$verification_status <- as.factor(data$verification_status)
 data$loan_status <- as.factor(data$loan_status)
-data$pymnt_plan <- as.factor(data$pymnt_plan)
 data$purpose <- as.factor(data$purpose)
-data$initial_list_status <- as.factor(data$initial_list_status)
 data$home_ownership <- as.factor(data$home_ownership)
 ```
 
@@ -70,19 +69,45 @@ Y<- subset(data_cat, select = loan_status)
 data_cat <- subset(data_cat, select = -c(loan_status))
 ```
 
+Para este trabajo, se va a trabajar con las siguientes variables:
+
+-   Loan_amnt: Cantidad de dinero solicitado por el prestatario.
+
+-   Int_rate: Tasa de interés.
+
+-   Installment: Pago mensual adeudado por el prestatario si se origina el préstamo.
+
+-   Annual_inc: Ingresos anuales reportados por el prestatario.
+
+-   Inq_last_6mths: Número de veces que el prestatario ha solicitado préstamos durante los últimos 6 meses.
+
+-   Open_acc: Créditos abiertos del prestatario.
+
+-   Pub_rec: Número de reportes públicos del prestatario.
+
+-   Acc_now_delinq: Número de cuentas en las que el prestatario esta en mora.
+
+-   Term: Cantidad de cuotas.
+
+-   Emp_length: Cantidad de años que el prestatario lleva trabajando.
+
+-   Home_ownership: Estado en que se encuentra la vivienda del prestatario.
+
+-   Verification_status: Verificación de los ingresos conjuntos de los copretatarios.
+
+-   Purpose: Propósito del crédito.
+
+-   Loan_status : Estado actual del prestamo, esta es la variable objetivo que indica si la persona cumple o incumple con el pago del crédito.
+
 ### 2.1- Análisis de Variables numéricas
 
 Se modifican los valores de las variables numéricas que posean pocos valores N/A, por el valor de la mediana de cada atributo.
 
 ```{r}
 data_num$annual_inc[is.na(data_num$annual_inc)] <- 63000
-data_num$delinq_2yrs[is.na(data_num$delinq_2yrs)] <- 0.0000
 data_num$inq_last_6mths[is.na(data_num$inq_last_6mths)] <- 0.0000
 data_num$open_acc[is.na(data_num$open_acc)] <- 10.00
 data_num$pub_rec[is.na(data_num$pub_rec)] <- 0.0000
-data_num$revol_util[is.na(data_num$revol_util)] <- 57.60
-data_num$total_acc[is.na(data_num$total_acc)] <- 23.00
-data_num$collections_12_mths_ex_med[is.na(data_num$collections_12_mths_ex_med)] <- 0.0000
 data_num$acc_now_delinq[is.na(data_num$acc_now_delinq)] <- 0.000000
 
 ```
@@ -94,32 +119,6 @@ También se analiza la existencia de datos atípicos en las variables numéricas
 -   Los que se encuentran debajo del mínimo, se escalan al percentil 5.
 
 ```{r}
-#Función para imprimir boxplots de todas las variables de un dataframe.
-impre_box <- function(data){
-  nombres <- names(data)
-  dimen <- dim(data)[2]
-  vector <- 1:dimen
-  for (variable in vector) {
-    plot.new()
-    set.seed(1)
-    rect(par("usr")[1], par("usr")[3], par("usr")[2], par("usr")[4],
-     col = "#ebebeb")
-    grid(nx = NULL, ny = NULL, col = "white", lty = 1,
-    lwd = par("lwd"), equilogs = TRUE)
-    par(new = TRUE)
-    boxplot(data[,variable], 
-            main= nombres[variable],
-            col = "#177e89",
-            boxlty = 0,
-            border = "#084c61",
-            outpch = 25,      
-            outbg = "#db3a34",   
-            whisklty = 2,
-            xlab= paste("Figura ",variable,". Boxplot de la variable ",nombres[variable])
-            )
-    #print(paste("Figura ",variable,". Boxplot de la variable ",nombres[variable]))
-  }
-}
 
 #Función para cambiar valores outliers.
 eliminacion_out <- function(data){
@@ -146,12 +145,6 @@ eliminacion_out <- function(data){
 
 #Se aplican la función eliminacion_out() a las variables numéricas.
 data_num <- eliminacion_out(data_num)
-```
-
-Al realizar lo anterior, identificamos la modificación los valores outliers en los siguientes boxplots para cada variable numérica.
-
-```{r}
-impre_box(data_num)
 ```
 
 ### 2.2- Modificación de la variable objetivo
@@ -204,16 +197,14 @@ kable(conteo_y,caption = "Cantidad de registros categorizados") %>%
   kable_minimal()
 ```
 
-```{r}
-print("Tabla 1. Tabla del conteo de la variable loan_status")
-```
+<center>**Tabla 1.** Tabla del conteo de la variable loan_status</center>
 
 ```{r}
 #Se unen los datos numéricos con los datos categóricos
 datos <- cbind(data_num,data_cat,Y)
 ```
 
-Debido al desbalanceo que se presenta en los registros, se utiliza una función de la librería ROSE, que permite realizar un balanceo en el dataset,. En la Tabla 2, se observa lo anterior:
+Debido al desbalanceo que se presenta en los registros, se utiliza la "ovun.sample" de la librería ROSE. Esta función permite crear "muestras posiblemente equilibradas mediante ejemplos minoritarios de sobremuestreo aleatorio, ejemplos mayoritarios de submuestreo o una combinación de sobremuestreo y submuestreo" (Lunardon, Menardi y Torelli, 2022). En la Tabla 2, se observa lo anterior:
 
 ```{r}
 #Balanceo de los datos
@@ -229,13 +220,12 @@ kable(conteo_y2,caption = "Cantidad de registros categorizados balanceados") %>%
   kable_minimal()
 ```
 
-```{r}
-print("Tabla 2. Tabla del nuevo conteo de la variable loan_status")
-```
+<center>**Tabla 2.** Tabla del nuevo conteo de la variable loan_status</center>
 
-Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo.
+Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo, esto debido a la capacidad de cómputo que requiere el modelo para poder trabajar con toda esta cantidad de observaciones.
 
 ```{r}
+set.seed(20)
 n_muestra <- dim(datos_balanceados)[1]
 p <- 0.08 # proporción de datos para el nuevo dataset
 ix <- sample(n_muestra,size = round(n_muestra*p),
@@ -243,19 +233,19 @@ ix <- sample(n_muestra,size = round(n_muestra*p),
 datos_muestra <- datos_balanceados[ix,]
 ```
 
-# Scorecards
+## 3- Scorecards
 
-Para la creación del scorecard, se utiliza un liberia llamada "Scorecard", la cual permite mediante sus funciones poder crear el modelo de manera óptima. Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función "var_filter". Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Y luego, se obtienen los valores woe para cada registro por cada una de sus variables.
+Para la creación del scorecard, se utiliza un liberia llamada "Scorecard", la cual permite mediante sus funciones poder crear el modelo de riesgo de crédito de manera óptima y eficiente con las funciones que ya vienen integradas.
+
+Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función "var_filter". Esta función permite. filtrar la información de acuerdo a condiciones específicas, como el valor de la información, la tasa de faltantes, la tasa de valores idénticos, entre otras condiciones.
+
+Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Esto se realiza con la función woebin, la cual, genera un agrupamiento óptimo para variables numéricas, de factores y categóricas utilizando métodos que incluyen la segmentación en forma de árbol o la combinación de chi-cuadrado.
+
+Y luego, se obtienen los valores woe para cada registro por cada una de sus variables, utilizando los bins y los datos filtrados previamente ya calculados.
 
 ```{r}
 datos_sel = var_filter(datos_muestra, "loan_status", positive = 'Incumple')
-```
-
-```{r}
 bins = woebin(datos_sel, "loan_status", positive = '1')
-```
-
-```{r, results}
 datos_woe = woebin_ply(datos_sel, bins)
 ```
 
@@ -280,58 +270,62 @@ score1 = scorecard_ply(datos_muestra, card)
 score2 = scorecard_ply(datos_muestra, card, only_total_score = FALSE)
 ```
 
-```{r}
-# Se modifican los outliers presentados en el score obtenido.
-x <- score1$score   
-qnt <- quantile(x, probs=c(.25, .75), na.rm = T)
-caps <- quantile(x, probs=c(.05, .95), na.rm = T)
-H <- 1.5 * IQR(x, na.rm = T)
-x[x < (qnt[1] - H)] <- caps[1]
-x[x > (qnt[2] + H)] <- caps[2]
-
-score1_mod <- as.data.frame(x)
-colnames(score1_mod) <- c("score")
-
-```
-
-## Analisis del modelo obtenido
-
-Una vez obtenido el modelo que genera el score, se analiza con la siguiente gráfica el score asociado con la probabilidad de incumplimiento de pago del cliente.
-
-```{r}
-dato_fit <- fitted(m2)
-plot(dato_fit,score1_mod$score, main = "Curva de score con respecto a la probabilidad de incumpliemto", xlab = "Probabilidad de incumplimiento", ylab = "Score", col = "purple")
-```
-
-```{r}
-print("Figura 27. Curva de score con respecto a la probabilidad de incumpliemto")
-```
-
-En Figura 27, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.
-
-## Análisis de las variables empledas en el modelo
+### 3.1- Análisis de las variables empledas en el modelo
 
 ```{r}
 pander(summary(m))
 ```
 
-```{r}
-print("Tabla 3. Tabla de resumen de las variables usadas en el modelo")
-```
+<center>**Tabla 3.** Tabla de resumen de las variables usadas en el modelo</center>
 
 Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(\>\|z\|).
 
-```{r}
-
-respuesta <- as.data.frame(datos_muestra[1,])
-```
+Podemos notar que las variables cuyo valor p son mayor a 0.05, no son de importancia para el modelo, estas son "loan_amnt" y "term". A continuación, se eliminan dichas variables, y se vuelve a crear el modelo.
 
 ```{r}
-Nuevo_score = scorecard_ply(respuesta, card)
+
+#Se vuelve a crear el modelo scorecard
+
+dataos_selec2 <- subset(datos_sel, select = -c(loan_amnt,term))
+bins2 = woebin(dataos_selec2, "loan_status", positive = '1')
+datos_woe2 = woebin_ply(dataos_selec2, bins2)
+
+# Se ajusta un modelo lineal
+m_2 = glm(loan_status ~ ., family = binomial(), data = datos_woe2)
+
+# Se seleccione un modelo basado en fórmulas por AIC
+m_step2 = step(m_2, direction="both", trace=FALSE)
+
+m22 = eval(m_step2$call)
+
+# Card
+card_nuevo = scorecard(bins2, m22)
+
+# Scord para cada registro del dataset datos_muestra
+score12 = scorecard_ply(datos_muestra, card_nuevo)
+
+# Scord para cada registro del dataset datos_muestra y para variable
+score22 = scorecard_ply(datos_muestra, card_nuevo, only_total_score = FALSE)
 ```
 
-## Referencias
+### 3.2- Análisis del modelo obtenido
+
+Una vez obtenido el modelo que genera el score, se analiza con la siguiente gráfica el score asociado con la probabilidad de incumplimiento de pago del cliente.
+
+```{r}
+dato_fit <- fitted(m22)
+plot(score12$score, dato_fit, main = "Curva de score con respecto a la probabilidad de incumpliemto", xlab = "Score", ylab = "Probabilidad de incumplimiento", col = "purple")
+grid()
+```
+
+<center>**Figura 1.** Curva de score con respecto a la probabilidad de incumpliemto</center>
+
+En Figura 1, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.
+
+## 4- Referencias
 
 -   Ng Yong Kad. (2020). Credit Scoring Development Using R. 2022, 15 de ocubre 2022, de rpubs. Sitio web: https://rpubs.com/ngyongkad/scorecard
 
 -   CRAN. (2022). Package 'scorecard'. 2022, 15 de ocubre 2022, de Package 'scorecard'. Sitio web: https://cran.r-project.org/web/packages/scorecard/scorecard.pdf
+
+-   Lunardon N., Menardi G. & Torelli N.. (2022). Package 'ROSE'. 2022, noviembre 5, de cran.r. Sitio web: https://cran.r-project.org/web/packages/ROSE/ROSE.pdf

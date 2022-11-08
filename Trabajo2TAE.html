@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.36">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Valentina Vanegas Castaño   Edwar Jose Londoño Correa   Andres Castrillón Velasquez   Diego Andres Chavarria Riaño   Sebastian Rendon Arteaga">
+
+<title>Modelo de riesgo de crédito</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+<script src="Trabajo2TAE_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Trabajo2TAE_files/libs/quarto-html/quarto.js"></script>
+<script src="Trabajo2TAE_files/libs/quarto-html/popper.min.js"></script>
+<script src="Trabajo2TAE_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Trabajo2TAE_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Trabajo2TAE_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Trabajo2TAE_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Trabajo2TAE_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Trabajo2TAE_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Trabajo2TAE_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+<script src="Trabajo2TAE_files/libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="Trabajo2TAE_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Modelo de riesgo de crédito</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Valentina Vanegas Castaño <br> Edwar Jose Londoño Correa <br> Andres Castrillón Velasquez <br> Diego Andres Chavarria Riaño <br> Sebastian Rendon Arteaga </p>
+          </div>
+  </div>
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+
+</div>
+<section id="contexto-del-problema" class="level2">
+<h2 class="anchored" data-anchor-id="contexto-del-problema">1- Contexto del problema</h2>
+<p>Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dado ya que pueden exisitir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que posee el crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).</p>
+<p>Para la creación del modelo, se utiliza un dataset que posee 45 variables y 466285 registros.</p>
+<div class="cell">
+
+</div>
+</section>
+<section id="procesamiento-de-los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="procesamiento-de-los-datos">2- Procesamiento de los datos</h2>
+<p>Inicialmente se eliminan variables que poseen un gran número o en su totalidad valores representados con N/A. También se eliminan variables que no son predictoras, como las variables de identificación, url de una página, entre otras.</p>
+<p>Teniendo en cuenta lo anterior, se eliminan las variables : dti_joint, open_il_6m, open_il_24m, total_bal_il, open_rv_12m, max_bal_bc, total_cu_tl, annual_inc_joint, verification_status_joint, open_acc_6m, open_il_12m, mths_since_rcnt_il, il_util, open_rv_24m, all_util, inq_fi, inq_last_12m,id, member_id, url, desc, zip_code, application_type, policy_code, mths_since_last_delinq, mths_since_last_record, mths_since_last_major_derog, tot_coll_amt, tot_cur_bal, total_rev_hi_lim.</p>
+<p>También se eliminan las variables: funded_amnt, funded_amnt_inv, dti, delinq_2yrs, revol_bal, revol_util, total_acc, out_prncp, out_prncp_inv, total_pymnt, total_pymnt_inv, total_rec_prncp, total_rec_int, total_rec_late_fee, recoveries, collection_recovery_fee, last_pymnt_amnt, collections_12_mths_ex_med, grade, pymnt_plan, initial_list_status, ya que son variables que no se pueden utilizar para predecir si a una persona que se le va a otorgar el crédito, cumpla o no con este.</p>
+<div class="cell">
+
+</div>
+<p>Adicionalmente, en el dataset tenemos variables de tipo numéricas y de tipo character, para facilidad en el trabajo, se cambian las variables de tipo character a factor.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<p>Para este trabajo, se va a trabajar con las siguientes variables:</p>
+<ul>
+<li><p>Loan_amnt: Cantidad de dinero solicitado por el prestatario.</p></li>
+<li><p>Int_rate: Tasa de interés.</p></li>
+<li><p>Installment: Pago mensual adeudado por el prestatario si se origina el préstamo.</p></li>
+<li><p>Annual_inc: Ingresos anuales reportados por el prestatario.</p></li>
+<li><p>Inq_last_6mths: Número de veces que el prestatario ha solicitado préstamos durante los últimos 6 meses.</p></li>
+<li><p>Open_acc: Créditos abiertos del prestatario.</p></li>
+<li><p>Pub_rec: Número de reportes públicos del prestatario.</p></li>
+<li><p>Acc_now_delinq: Número de cuentas en las que el prestatario esta en mora.</p></li>
+<li><p>Term: Cantidad de cuotas.</p></li>
+<li><p>Emp_length: Cantidad de años que el prestatario lleva trabajando.</p></li>
+<li><p>Home_ownership: Estado en que se encuentra la vivienda del prestatario.</p></li>
+<li><p>Verification_status: Verificación de los ingresos conjuntos de los copretatarios.</p></li>
+<li><p>Purpose: Propósito del crédito.</p></li>
+<li><p>Loan_status : Estado actual del prestamo, esta es la variable objetivo que indica si la persona cumple o incumple con el pago del crédito.</p></li>
+</ul>
+<section id="análisis-de-variables-numéricas" class="level3">
+<h3 class="anchored" data-anchor-id="análisis-de-variables-numéricas">2.1- Análisis de Variables numéricas</h3>
+<p>Se modifican los valores de las variables numéricas que posean pocos valores N/A, por el valor de la mediana de cada atributo.</p>
+<div class="cell">
+
+</div>
+<p>También se analiza la existencia de datos atípicos en las variables numéricas. Para esto se crea una función que permita identificar las variables que poseen datos atípicos, y estos se escalan de la siguiente forma:</p>
+<ul>
+<li><p>Los que se encuentran por encima del rango máximo, se escalan al percentil 95.</p></li>
+<li><p>Los que se encuentran debajo del mínimo, se escalan al percentil 5.</p></li>
+</ul>
+<div class="cell">
+
+</div>
+<p>Al realizar lo anterior, identificamos la modificación los valores outliers en los siguientes boxplots para cada variable numérica.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-5.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-6.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-7.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-8-8.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="modificación-de-la-variable-objetivo" class="level3">
+<h3 class="anchored" data-anchor-id="modificación-de-la-variable-objetivo">2.2- Modificación de la variable objetivo</h3>
+<p>En el dataset, la variable objetivo es la columna <strong>“loan_status”</strong>, en esta se encuentran los siguientes valores:</p>
+<ul>
+<li><p>Current</p></li>
+<li><p>Fully Paid.</p></li>
+<li><p>Late (31-120 days).</p></li>
+<li><p>In Grace Period.</p></li>
+<li><p>Does not meet the credit policy. Status:Fully Paid.</p></li>
+<li><p>Late (16-30 days).</p></li>
+<li><p>Default.</p></li>
+<li><p>Does not meet the credit policy. Status:Charged Off.</p></li>
+</ul>
+<p>Para la creación de este modelo, las variables <strong>“Default”</strong> y <strong>“Late (31-120 days)”</strong> serán clasificadas como <strong>“Cumple”</strong>, y las demás como <strong>“Incumple”</strong>.</p>
+<div class="cell">
+
+</div>
+<p>En la Tabla 1, se observa la cantidad de registros que poseen calificación <strong>“Cumple”</strong> e <strong>“Incumple”</strong>.</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table lightable-minimal" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<caption>Cantidad de registros categorizados</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variable objetivo loan_status </th>
+   <th style="text-align:right;"> Cantidad </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Cumple </td>
+   <td style="text-align:right;"> 458553 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Incumple </td>
+   <td style="text-align:right;"> 7732 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Tabla 1. Tabla del conteo de la variable loan_status"</code></pre>
+</div>
+</div>
+<div class="cell">
+
+</div>
+<p>Debido al desbalanceo que se presenta en los registros, se utiliza una función de la librería ROSE, que permite realizar un balanceo en el dataset,. En la Tabla 2, se observa lo anterior:</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+<div class="cell-output-display">
+
+<table class="table lightable-minimal" style="width: auto !important; margin-left: auto; margin-right: auto; font-family: &quot;Trebuchet MS&quot;, verdana, sans-serif; margin-left: auto; margin-right: auto;">
+<caption>Cantidad de registros categorizados balanceados</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Variable objetivo loan_status </th>
+   <th style="text-align:right;"> Cantidad </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Incumple </td>
+   <td style="text-align:right;"> 458935 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Cumple </td>
+   <td style="text-align:right;"> 458553 </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Tabla 2. Tabla del nuevo conteo de la variable loan_status"</code></pre>
+</div>
+</div>
+<p>Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo.</p>
+<div class="cell">
+
+</div>
+</section>
+</section>
+<section id="scorecards" class="level1">
+<h1>Scorecards</h1>
+<p>Para la creación del scorecard, se utiliza un liberia llamada “Scorecard”, la cual permite mediante sus funciones poder crear el modelo de manera óptima. Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función “var_filter”. Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Y luego, se obtienen los valores woe para cada registro por cada una de sus variables.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[INFO] filtering variables ... </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[INFO] creating woe binning ... </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[INFO] converting into woe values ... </code></pre>
+</div>
+</div>
+<p>Ya por último, se obtiene el objeto denominado <strong>“Card”</strong>, el cual nos permite obtener el score de acuerdo a los valores de las variables.</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+<section id="analisis-del-modelo-obtenido" class="level2">
+<h2 class="anchored" data-anchor-id="analisis-del-modelo-obtenido">Analisis del modelo obtenido</h2>
+<p>Una vez obtenido el modelo que genera el score, se analiza con la siguiente gráfica el score asociado con la probabilidad de incumplimiento de pago del cliente.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="Trabajo2TAE_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Figura 27. Curva de score con respecto a la probabilidad de incumpliemto"</code></pre>
+</div>
+</div>
+<p>En Figura 27, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.</p>
+</section>
+<section id="análisis-de-las-variables-empledas-en-el-modelo" class="level2">
+<h2 class="anchored" data-anchor-id="análisis-de-las-variables-empledas-en-el-modelo">Análisis de las variables empledas en el modelo</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 38%">
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">&nbsp;</th>
+<th style="text-align: center;">Estimate</th>
+<th style="text-align: center;">Std. Error</th>
+<th style="text-align: center;">z value</th>
+<th style="text-align: center;">Pr(&gt;|z|)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>(Intercept)</strong></td>
+<td style="text-align: center;">0.01217</td>
+<td style="text-align: center;">0.007717</td>
+<td style="text-align: center;">1.577</td>
+<td style="text-align: center;">0.1149</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>loan_amnt_woe</strong></td>
+<td style="text-align: center;">0.2595</td>
+<td style="text-align: center;">0.08791</td>
+<td style="text-align: center;">2.952</td>
+<td style="text-align: center;">0.00316</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>int_rate_woe</strong></td>
+<td style="text-align: center;">0.8985</td>
+<td style="text-align: center;">0.01662</td>
+<td style="text-align: center;">54.07</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>installment_woe</strong></td>
+<td style="text-align: center;">0.6744</td>
+<td style="text-align: center;">0.0739</td>
+<td style="text-align: center;">9.125</td>
+<td style="text-align: center;">7.168e-20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>annual_inc_woe</strong></td>
+<td style="text-align: center;">1.654</td>
+<td style="text-align: center;">0.07113</td>
+<td style="text-align: center;">23.25</td>
+<td style="text-align: center;">1.274e-119</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>open_acc_woe</strong></td>
+<td style="text-align: center;">0.9795</td>
+<td style="text-align: center;">0.05965</td>
+<td style="text-align: center;">16.42</td>
+<td style="text-align: center;">1.336e-60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>term_woe</strong></td>
+<td style="text-align: center;">0.03798</td>
+<td style="text-align: center;">0.0355</td>
+<td style="text-align: center;">1.07</td>
+<td style="text-align: center;">0.2847</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>verification_status_woe</strong></td>
+<td style="text-align: center;">0.4574</td>
+<td style="text-align: center;">0.03891</td>
+<td style="text-align: center;">11.75</td>
+<td style="text-align: center;">6.705e-32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><strong>purpose_woe</strong></td>
+<td style="text-align: center;">0.3075</td>
+<td style="text-align: center;">0.06864</td>
+<td style="text-align: center;">4.48</td>
+<td style="text-align: center;">7.459e-06</td>
+</tr>
+</tbody>
+</table>
+<p>(Dispersion parameter for binomial family taken to be 1 )</p>
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 43%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">Null deviance:</td>
+<td style="text-align: center;">101750 on 73398 degrees of freedom</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Residual deviance:</td>
+<td style="text-align: center;">95371 on 73390 degrees of freedom</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Tabla 3. Tabla de resumen de las variables usadas en el modelo"</code></pre>
+</div>
+</div>
+<p>Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(&gt;|z|).</p>
+<div class="cell">
+
+</div>
+<div class="cell">
+
+</div>
+</section>
+<section id="referencias" class="level2">
+<h2 class="anchored" data-anchor-id="referencias">Referencias</h2>
+<ul>
+<li><p>Ng Yong Kad. (2020). Credit Scoring Development Using R. 2022, 15 de ocubre 2022, de rpubs. Sitio web: https://rpubs.com/ngyongkad/scorecard</p></li>
+<li><p>CRAN. (2022). Package ‘scorecard’. 2022, 15 de ocubre 2022, de Package ‘scorecard’. Sitio web: https://cran.r-project.org/web/packages/scorecard/scorecard.pdf</p></li>
+</ul>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
