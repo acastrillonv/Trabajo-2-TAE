@@ -19,44 +19,44 @@ ui <- fluidPage(# App title ----
                     
                     div(h2("Ingresa tus datos",align='center')),
                     div(
-                      textInput("loan_amnt", h4("Monto del préstamo"), value = 0),
-                      textInput("funded_amnt", h4("Cantidad total comprometida con el préstamo"), value = 0),
-                      textInput("funded_amnt_inv", h4("Monto total invertido por los inversionistas para el préstamo"), value = 0),
+                      #textInput("loan_amnt", h4("Monto del préstamo"), value = 0),
+                      #textInput("funded_amnt", h4("Cantidad total comprometida con el préstamo"), value = 0),
+                      #textInput("funded_amnt_inv", h4("Monto total invertido por los inversionistas para el préstamo"), value = 0),
                       textInput("int_rate", h4("Tasa de interés del préstamo"), value = 0),
                       textInput("installment", h4("Cuota mensual del prestatario"), value = 0),
                       textInput("annual_inc", h4("Ingresos anuales declarados por el prestatario"), value = 0),
-                      textInput("dti", h4("DTI"), value = 0),
-                      textInput("open_acc", h4("Número de operaciones abiertas en los ultimos 6 meses"), value = 0),
-                      textInput("revol_bal", h4("Saldo rotatorio de crédito total"), value = 0),
-                      textInput("revol_util", h4("Saldo utilizado de préstamo disponible"), value = 0),
-                      textInput("out_prncp", h4("Capital restante pendiente por el monto total financiado"), value = 0),
-                      textInput("out_prncp_inv", h4("Capital pendiente restante por parte del monto total financiado por los inversores"), value = 0),
-                      textInput("total_pymnt", h4("Pagos recibidos hasta la fecha por el monto total financiado"), value = 0),
-                      textInput("total_pymnt_inv", h4("Pagos recibidos hasta la fecha por parte del monto total financiado por los inversores"), value = 0),
-                      textInput("total_rec_prncp", h4("Capital recibido hasta la fecha"), value = 0),
-                      textInput("total_rec_int", h4("Intereses recibidos hasta la fecha"), value = 0),
-                      textInput("last_pymnt_amnt", h4("Valor último pago recibido"), value = 0),
-                      selectInput(
-                        "term",
-                        h4("Número de cuotas"),
-                        choices = list("36 cuotas" = "36 months" ,
-                                       "60 cuotas" = "60 months"),
-                        selected = "36 months"
-                      ),
-                      selectInput(
-                        "grade",
-                        h4("Grado de préstamo"),
-                        choices = list(
-                          "A" = "A" ,
-                          "B" = "B",
-                          "C" = "C",
-                          "D" = "D",
-                          "E" = "E",
-                          "F" = "F",
-                          "G" = "G"
-                        ),
-                        selected = "A"
-                      ),
+                      #textInput("dti", h4("DTI"), value = 0),
+                      textInput("open_acc", h4("Créditos abiertos del prestatario"), value = 0),
+                      #textInput("revol_bal", h4("Saldo rotatorio de crédito total"), value = 0),
+                      #textInput("revol_util", h4("Saldo utilizado de préstamo disponible"), value = 0),
+                      #textInput("out_prncp", h4("Capital restante pendiente por el monto total financiado"), value = 0),
+                      #textInput("out_prncp_inv", h4("Capital pendiente restante por parte del monto total financiado por los inversores"), value = 0),
+                      #textInput("total_pymnt", h4("Pagos recibidos hasta la fecha por el monto total financiado"), value = 0),
+                      #textInput("total_pymnt_inv", h4("Pagos recibidos hasta la fecha por parte del monto total financiado por los inversores"), value = 0),
+                      #textInput("total_rec_prncp", h4("Capital recibido hasta la fecha"), value = 0),
+                      #textInput("total_rec_int", h4("Intereses recibidos hasta la fecha"), value = 0),
+                      #textInput("last_pymnt_amnt", h4("Valor último pago recibido"), value = 0),
+                      #selectInput(
+                        #"term",
+                        #h4("Número de cuotas"),
+                        #choices = list("36 cuotas" = "36 months" ,
+                        #               "60 cuotas" = "60 months"),
+                        #selected = "36 months"
+                      #),
+                      #selectInput(
+                      #  "grade",
+                      #  h4("Grado de préstamo"),
+                      #  choices = list(
+                      #    "A" = "A" ,
+                      #    "B" = "B",
+                      #    "C" = "C",
+                      #    "D" = "D",
+                      #    "E" = "E",
+                      #    "F" = "F",
+                      #    "G" = "G"
+                      #  ),
+                      #  selected = "A"
+                      #),
                       selectInput(
                         "verification_status",
                         h4("Ingresos o fuente de ingresos verificada"),
@@ -70,7 +70,7 @@ ui <- fluidPage(# App title ----
                       
                       selectInput(
                         "purpose",
-                        h4("Motivo préstamo"),
+                        h4("Motivo del préstamo"),
                         choices = list(
                           "Deuda" = "debt_consolidation" ,
                           "Tarjeta de crédito" = "credit_card",
@@ -89,13 +89,13 @@ ui <- fluidPage(# App title ----
                         ),
                         selected = "debt_consolidation"
                       ),
-                      selectInput(
-                        "initial_list_status",
-                        h4("Estado de cotización del préstamo"),
-                        choices = list("F" = "f" ,
-                                       "W" = "w"),
-                        selected = "f"
-                      )
+                      #selectInput(
+                      #  "initial_list_status",
+                      #  h4("Estado de cotización del préstamo"),
+                      #  choices = list("F" = "f" ,
+                      #                 "W" = "w"),
+                      #  selected = "f"
+                      #)
                     ),
                     br(),
                     div(
@@ -124,47 +124,47 @@ server <- function(input, output) {
       0
     } else if (input$Calculate) {
       respuesta <- data.frame(
-        loan_amnt=input$loan_amnt,
-        funded_amnt=input$funded_amnt,
-        funded_amnt_inv=input$funded_amnt_inv,
+        #loan_amnt=input$loan_amnt,
+        #funded_amnt=input$funded_amnt,
+        #funded_amnt_inv=input$funded_amnt_inv,
         int_rate=input$int_rate,
         installment=input$installment,
         annual_inc=input$annual_inc,
-        dti=input$dti,
+        #dti=input$dti,
         open_acc=input$open_acc,
-        revol_bal=input$revol_bal,
-        revol_util=input$revol_util,
-        out_prncp=input$out_prncp,
-        out_prncp_inv=input$out_prncp_inv,
-        total_pymnt=input$total_pymnt,
-        total_pymnt_inv=input$total_pymnt_inv,
-        total_rec_prncp=input$total_rec_prncp,
-        total_rec_int=input$total_rec_int,
-        last_pymnt_amnt=input$last_pymnt_amnt,
-        term=input$term,
-        grade=input$grade,
+        #revol_bal=input$revol_bal,
+        #revol_util=input$revol_util,
+        #out_prncp=input$out_prncp,
+        #out_prncp_inv=input$out_prncp_inv,
+        #total_pymnt=input$total_pymnt,
+        #total_pymnt_inv=input$total_pymnt_inv,
+        #total_rec_prncp=input$total_rec_prncp,
+        #total_rec_int=input$total_rec_int,
+        #last_pymnt_amnt=input$last_pymnt_amnt,
+        #term=input$term,
+        #grade=input$grade,
         verification_status=input$verification_status,
-        purpose=input$purpose,
-        initial_list_status=input$initial_list_status
+        purpose=input$purpose
+        #initial_list_status=input$initial_list_status
       )
       
       #term
-      t36 <- datos_muestra[2,27]
-      t60 <- datos_muestra[1,27]
+      #t36 <- datos_muestra[2,27]
+      #t60 <- datos_muestra[1,27]
       
       #grade
-      gA <- datos_muestra[13,28]
-      gB <- datos_muestra[4,28]
-      gC <- datos_muestra[3,28]
-      gD <- datos_muestra[1,28]
-      gE <- datos_muestra[9,28]
-      gF <- datos_muestra[8,28]
-      gG <- datos_muestra[27,28]
+      #gA <- datos_muestra[13,28]
+      #gB <- datos_muestra[4,28]
+      #gC <- datos_muestra[3,28]
+      #gD <- datos_muestra[1,28]
+      #gE <- datos_muestra[9,28]
+      #gF <- datos_muestra[8,28]
+      #gG <- datos_muestra[27,28]
       
       #initial
       
-      i_f <- datos_muestra[5,34]
-      i_w <- datos_muestra[1,34]
+      #i_f <- datos_muestra[5,34]
+      #i_w <- datos_muestra[1,34]
       
       #porpuse
       
@@ -189,48 +189,48 @@ server <- function(input, output) {
       v_not_Verified <- datos_muestra[5,31]
       
       
-      respuesta$loan_amnt <- as.numeric(respuesta$loan_amnt)
-      respuesta$funded_amnt <- as.numeric(respuesta$funded_amnt)
-      respuesta$funded_amnt_inv <- as.numeric(respuesta$funded_amnt_inv)
+      #respuesta$loan_amnt <- as.numeric(respuesta$loan_amnt)
+      #respuesta$funded_amnt <- as.numeric(respuesta$funded_amnt)
+      #respuesta$funded_amnt_inv <- as.numeric(respuesta$funded_amnt_inv)
       respuesta$int_rate <- as.numeric(respuesta$int_rate)
       respuesta$installment <- as.numeric(respuesta$installment)
       respuesta$annual_inc <- as.numeric(respuesta$annual_inc)
-      respuesta$dti <- as.numeric(respuesta$dti)
+      #respuesta$dti <- as.numeric(respuesta$dti)
       respuesta$open_acc <- as.numeric(respuesta$open_acc)
-      respuesta$revol_bal <- as.numeric(respuesta$revol_bal)
-      respuesta$revol_util <- as.numeric(respuesta$revol_util)
-      respuesta$out_prncp <- as.numeric(respuesta$out_prncp)
-      respuesta$out_prncp_inv <- as.numeric(respuesta$out_prncp_inv)
-      respuesta$total_pymnt <- as.numeric(respuesta$total_pymnt)
-      respuesta$total_pymnt_inv <- as.numeric(respuesta$total_pymnt_inv)
-      respuesta$total_rec_prncp <- as.numeric(respuesta$total_rec_prncp)
-      respuesta$total_rec_int <- as.numeric(respuesta$total_rec_int)
-      respuesta$last_pymnt_amnt <- as.numeric(respuesta$last_pymnt_amnt)
+      #respuesta$revol_bal <- as.numeric(respuesta$revol_bal)
+      #respuesta$revol_util <- as.numeric(respuesta$revol_util)
+      #respuesta$out_prncp <- as.numeric(respuesta$out_prncp)
+      #respuesta$out_prncp_inv <- as.numeric(respuesta$out_prncp_inv)
+      #respuesta$total_pymnt <- as.numeric(respuesta$total_pymnt)
+      #respuesta$total_pymnt_inv <- as.numeric(respuesta$total_pymnt_inv)
+      #respuesta$total_rec_prncp <- as.numeric(respuesta$total_rec_prncp)
+      #respuesta$total_rec_int <- as.numeric(respuesta$total_rec_int)
+      #respuesta$last_pymnt_amnt <- as.numeric(respuesta$last_pymnt_amnt)
       
       
       # respuesta$term <- t36
-      if ( str_contains(respuesta$term,"36 months") ){
-        respuesta$term <- t36
-      }else{
-        respuesta$term <- t60
-      }
+      #if ( str_contains(respuesta$term,"36 months") ){
+      #  respuesta$term <- t36
+      #}else{
+      #  respuesta$term <- t60
+      #}
       
       # respuesta$grade <- gA
-      if ( str_contains(respuesta$grade,"A") ){
-        respuesta$grade <- gA
-      }else if ( str_contains(respuesta$grade,"B") ){
-        respuesta$grade <- gB
-      }else if ( str_contains(respuesta$grade,"C") ){
-        respuesta$grade <- gC
-      }else if ( str_contains(respuesta$grade,"D") ){
-        respuesta$grade <- gD
-      }else if ( str_contains(respuesta$grade,"E") ){
-        respuesta$grade <- gE
-      }else if ( str_contains(respuesta$grade,"F") ){
-        respuesta$grade <- gF
-      }else if ( str_contains(respuesta$grade,"G") ){
-        respuesta$grade <- gF
-      }
+      #if ( str_contains(respuesta$grade,"A") ){
+      #  respuesta$grade <- gA
+      #}else if ( str_contains(respuesta$grade,"B") ){
+      #  respuesta$grade <- gB
+      #}else if ( str_contains(respuesta$grade,"C") ){
+      #  respuesta$grade <- gC
+      #}else if ( str_contains(respuesta$grade,"D") ){
+      #  respuesta$grade <- gD
+      #}else if ( str_contains(respuesta$grade,"E") ){
+      #  respuesta$grade <- gE
+      #}else if ( str_contains(respuesta$grade,"F") ){
+      #  respuesta$grade <- gF
+      #}else if ( str_contains(respuesta$grade,"G") ){
+      #  respuesta$grade <- gF
+      #}
       
       # respuesta$verification_status <- v_Source_Verified
       
@@ -275,11 +275,11 @@ server <- function(input, output) {
       }
       
       # respuesta$initial_list_status <- i_f
-      if ( str_contains(respuesta$initial_list_status,"f") ){
-        respuesta$initial_list_status <- i_f
-      }else{
-        respuesta$initial_list_status <- i_w
-      }
+      #if ( str_contains(respuesta$initial_list_status,"f") ){
+      #  respuesta$initial_list_status <- i_f
+      #}else{
+      #  respuesta$initial_list_status <- i_w
+      #}
       
       Nuevo_score = scorecard_ply(respuesta, card)
       Nuevo_score

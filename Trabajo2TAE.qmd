@@ -237,7 +237,27 @@ datos_muestra <- datos_balanceados[ix,]
 
 Para la creación del scorecard, se utiliza un liberia llamada "Scorecard", la cual permite mediante sus funciones poder crear el modelo de riesgo de crédito de manera óptima y eficiente con las funciones que ya vienen integradas.
 
-Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función "var_filter". Esta función permite. filtrar la información de acuerdo a condiciones específicas, como el valor de la información, la tasa de faltantes, la tasa de valores idénticos, entre otras condiciones.
+Como primer paso, se realiza un filtrado de los datos ya procesados anteriormente utilizando la función "var_filter". Esta función permite. filtrar la información de acuerdo a condiciones específicas, como el valor de la información, la tasa de faltantes, la tasa de valores idénticos, entre otras condiciones. Como resultado, las variables seleccionadas son:
+
+-   Loan_amnt: Cantidad de dinero solicitado por el prestatario.
+
+-   Int_rate: Tasa de interés.
+
+-   Installment: Pago mensual adeudado por el prestatario si se origina el préstamo.
+
+-   Annual_inc: Ingresos anuales reportados por el prestatario.
+
+-   Open_acc: Créditos abiertos del prestatario.
+
+-   Term: Cantidad de cuotas.
+
+-   Verification_status: Verificación de los ingresos conjuntos de los copretatarios.
+
+-   Purpose: Propósito del crédito.
+
+-   Loan_status : Estado actual del prestamo, esta es la variable objetivo que indica si la persona cumple o incumple con el pago del crédito.
+
+Cabe destacatar que la anterior selección no siempre es la misma, esto debido a la forma en que la función opera para seleccionar las variables adecuadas.
 
 Luego, se procede a la creación de los contenedores finos por variable (o en ingles fine bins). Esto se realiza con la función woebin, la cual, genera un agrupamiento óptimo para variables numéricas, de factores y categóricas utilizando métodos que incluyen la segmentación en forma de árbol o la combinación de chi-cuadrado.
 
@@ -329,3 +349,18 @@ En Figura 1, podemos observar que a medida que la probabilidad se vuelve 0 (Clie
 -   CRAN. (2022). Package 'scorecard'. 2022, 15 de ocubre 2022, de Package 'scorecard'. Sitio web: https://cran.r-project.org/web/packages/scorecard/scorecard.pdf
 
 -   Lunardon N., Menardi G. & Torelli N.. (2022). Package 'ROSE'. 2022, noviembre 5, de cran.r. Sitio web: https://cran.r-project.org/web/packages/ROSE/ROSE.pdf
+
+```{r}
+#Prueba
+int_rate <- 0.2
+installment <- 165.19
+annual_inc <- 54000
+open_acc <- 5
+verification_status <- "Not Verified"
+purpose <- "debt_consolidation"
+
+pruebaPepe<-data.frame(int_rate,installment,annual_inc,open_acc,verification_status,purpose)
+pepe2 <- datos_sel[1,]
+pepe2 <- subset(pepe2, select = -c(loan_status,term))
+valor <- scorecard_ply(pruebaPepe, card_nuevo)
+```
