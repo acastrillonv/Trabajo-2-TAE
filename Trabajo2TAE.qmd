@@ -328,6 +328,12 @@ score12 = scorecard_ply(datos_muestra, card_nuevo)
 score22 = scorecard_ply(datos_muestra, card_nuevo, only_total_score = FALSE)
 ```
 
+```{r}
+#Si se deseea guardar el modelo, se ejecuta la seiguiente linea
+save(card_nuevo, file = "card_nuevo.RData")
+#save(dataos_selec2, file = "datos_muestra.RData")
+```
+
 ### 3.2- Análisis del modelo obtenido
 
 Una vez obtenido el modelo que genera el score, se analiza con la siguiente gráfica el score asociado con la probabilidad de incumplimiento de pago del cliente.
@@ -363,4 +369,14 @@ pruebaPepe<-data.frame(int_rate,installment,annual_inc,open_acc,verification_sta
 pepe2 <- datos_sel[1,]
 pepe2 <- subset(pepe2, select = -c(loan_status,term))
 valor <- scorecard_ply(pruebaPepe, card_nuevo)
+```
+
+```{r}
+#select()
+#select(dataos_selec2["other",6]
+#vector<- 1:73408
+#dataos_selec2$id <- vector       
+#filtro <-dataos_selec2[dataos_selec2$purpose=="renewable_energy"]
+
+#dataos_selec2 <- subset(dataos_selec2, select = -c(id))
 ```
