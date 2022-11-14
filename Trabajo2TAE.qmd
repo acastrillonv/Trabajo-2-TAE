@@ -329,8 +329,9 @@ score22 = scorecard_ply(datos_muestra, card_nuevo, only_total_score = FALSE)
 ```
 
 ```{r}
-#Si se deseea guardar el modelo, se ejecuta la seiguiente linea
-save(card_nuevo, file = "card_nuevo.RData")
+#Si se deseea guardar el modelo, se debe ejecutar las siguientes lineas
+
+#save(card_nuevo, file = "card_nuevo.RData")
 #save(dataos_selec2, file = "datos_muestra.RData")
 ```
 
@@ -358,25 +359,15 @@ En Figura 1, podemos observar que a medida que la probabilidad se vuelve 0 (Clie
 
 ```{r}
 #Prueba
-int_rate <- 0.2
-installment <- 165.19
-annual_inc <- 54000
-open_acc <- 5
-verification_status <- "Not Verified"
-purpose <- "debt_consolidation"
+#int_rate <- 0.2
+#installment <- 165.19
+#annual_inc <- 54000
+#open_acc <- 5
+#verification_status <- "Not Verified"
+#purpose <- "debt_consolidation"
 
-pruebaPepe<-data.frame(int_rate,installment,annual_inc,open_acc,verification_status,purpose)
-pepe2 <- datos_sel[1,]
-pepe2 <- subset(pepe2, select = -c(loan_status,term))
-valor <- scorecard_ply(pruebaPepe, card_nuevo)
-```
-
-```{r}
-#select()
-#select(dataos_selec2["other",6]
-#vector<- 1:73408
-#dataos_selec2$id <- vector       
-#filtro <-dataos_selec2[dataos_selec2$purpose=="renewable_energy"]
-
-#dataos_selec2 <- subset(dataos_selec2, select = -c(id))
+#pruebaPepe<-data.frame(int_rate,installment,annual_inc,open_acc,verification_status,purpose)
+#pepe2 <- datos_sel[1,]
+#pepe2 <- subset(pepe2, select = -c(loan_status,term))
+#valor <- scorecard_ply(pruebaPepe, card_nuevo)
 ```
