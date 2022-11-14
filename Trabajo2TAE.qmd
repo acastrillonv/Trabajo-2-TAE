@@ -20,7 +20,7 @@ library(kableExtra)
 
 ## 1- Contexto del problema
 
-Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dado ya que pueden exisitir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que posee el crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).
+Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dado ya que pueden exisitir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que desea un crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).
 
 Para la creación del modelo, se utiliza un dataset que posee 45 variables y 466285 registros.
 
