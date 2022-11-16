@@ -69,7 +69,7 @@ ul.task-list{list-style: none;}
 </div>
 <section id="contexto-del-problema" class="level2">
 <h2 class="anchored" data-anchor-id="contexto-del-problema">1- Contexto del problema</h2>
-<p>Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dado ya que pueden exisitir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que desea un crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).</p>
+<p>Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dados, ya que pueden existir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que desea un crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).</p>
 <p>Para la creación del modelo, se utiliza un dataset que posee 45 variables y 466285 registros.</p>
 <div class="cell">
 
@@ -168,6 +168,7 @@ ul.task-list{list-style: none;}
 <center>
 <strong>Tabla 1.</strong> Tabla del conteo de la variable loan_status
 </center>
+<p><br></p>
 <div class="cell">
 
 </div>
@@ -189,7 +190,7 @@ ul.task-list{list-style: none;}
 <tbody>
   <tr>
    <td style="text-align:left;"> Incumple </td>
-   <td style="text-align:right;"> 459131 </td>
+   <td style="text-align:right;"> 459099 </td>
   </tr>
   <tr>
    <td style="text-align:left;"> Cumple </td>
@@ -203,6 +204,7 @@ ul.task-list{list-style: none;}
 <center>
 <strong>Tabla 2.</strong> Tabla del nuevo conteo de la variable loan_status
 </center>
+<p><br></p>
 <p>Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo, esto debido a la capacidad de cómputo que requiere el modelo para poder trabajar con toda esta cantidad de observaciones.</p>
 <div class="cell">
 
@@ -266,66 +268,66 @@ ul.task-list{list-style: none;}
 <tbody>
 <tr class="odd">
 <td style="text-align: center;"><strong>(Intercept)</strong></td>
-<td style="text-align: center;">0.003739</td>
+<td style="text-align: center;">0.003762</td>
 <td style="text-align: center;">0.007711</td>
-<td style="text-align: center;">0.4848</td>
-<td style="text-align: center;">0.6278</td>
+<td style="text-align: center;">0.4879</td>
+<td style="text-align: center;">0.6256</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>loan_amnt_woe</strong></td>
-<td style="text-align: center;">0.03765</td>
-<td style="text-align: center;">0.1102</td>
-<td style="text-align: center;">0.3417</td>
-<td style="text-align: center;">0.7326</td>
+<td style="text-align: center;">0.0706</td>
+<td style="text-align: center;">0.09868</td>
+<td style="text-align: center;">0.7155</td>
+<td style="text-align: center;">0.4743</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>int_rate_woe</strong></td>
-<td style="text-align: center;">0.9036</td>
-<td style="text-align: center;">0.01668</td>
-<td style="text-align: center;">54.18</td>
+<td style="text-align: center;">0.8976</td>
+<td style="text-align: center;">0.01686</td>
+<td style="text-align: center;">53.23</td>
 <td style="text-align: center;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>installment_woe</strong></td>
-<td style="text-align: center;">0.808</td>
-<td style="text-align: center;">0.09244</td>
-<td style="text-align: center;">8.741</td>
-<td style="text-align: center;">2.304e-18</td>
+<td style="text-align: center;">0.8196</td>
+<td style="text-align: center;">0.08456</td>
+<td style="text-align: center;">9.692</td>
+<td style="text-align: center;">3.255e-22</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>annual_inc_woe</strong></td>
-<td style="text-align: center;">1.477</td>
-<td style="text-align: center;">0.06788</td>
-<td style="text-align: center;">21.77</td>
-<td style="text-align: center;">4.938e-105</td>
+<td style="text-align: center;">1.689</td>
+<td style="text-align: center;">0.07243</td>
+<td style="text-align: center;">23.33</td>
+<td style="text-align: center;">2.404e-120</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>open_acc_woe</strong></td>
-<td style="text-align: center;">0.9569</td>
-<td style="text-align: center;">0.06006</td>
-<td style="text-align: center;">15.93</td>
-<td style="text-align: center;">3.827e-57</td>
+<td style="text-align: center;">0.9606</td>
+<td style="text-align: center;">0.05751</td>
+<td style="text-align: center;">16.7</td>
+<td style="text-align: center;">1.254e-62</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>term_woe</strong></td>
-<td style="text-align: center;">0.07861</td>
-<td style="text-align: center;">0.03535</td>
-<td style="text-align: center;">2.223</td>
-<td style="text-align: center;">0.02619</td>
+<td style="text-align: center;">0.03987</td>
+<td style="text-align: center;">0.03646</td>
+<td style="text-align: center;">1.093</td>
+<td style="text-align: center;">0.2742</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;"><strong>verification_status_woe</strong></td>
-<td style="text-align: center;">0.3853</td>
-<td style="text-align: center;">0.04321</td>
-<td style="text-align: center;">8.917</td>
-<td style="text-align: center;">4.8e-19</td>
+<td style="text-align: center;">0.4222</td>
+<td style="text-align: center;">0.04032</td>
+<td style="text-align: center;">10.47</td>
+<td style="text-align: center;">1.15e-25</td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;"><strong>purpose_woe</strong></td>
-<td style="text-align: center;">0.4089</td>
-<td style="text-align: center;">0.07051</td>
-<td style="text-align: center;">5.8</td>
-<td style="text-align: center;">6.646e-09</td>
+<td style="text-align: center;">0.4166</td>
+<td style="text-align: center;">0.06898</td>
+<td style="text-align: center;">6.04</td>
+<td style="text-align: center;">1.544e-09</td>
 </tr>
 </tbody>
 </table>
@@ -338,11 +340,11 @@ ul.task-list{list-style: none;}
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">Null deviance:</td>
-<td style="text-align: center;">101774 on 73414 degrees of freedom</td>
+<td style="text-align: center;">101770 on 73411 degrees of freedom</td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">Residual deviance:</td>
-<td style="text-align: center;">95518 on 73406 degrees of freedom</td>
+<td style="text-align: center;">95501 on 73403 degrees of freedom</td>
 </tr>
 </tbody>
 </table>
@@ -351,8 +353,10 @@ ul.task-list{list-style: none;}
 <center>
 <strong>Tabla 3.</strong> Tabla de resumen de las variables usadas en el modelo
 </center>
+<p><br></p>
 <p>Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(&gt;|z|).</p>
 <p>Podemos notar que las variables cuyo valor p son mayor a 0.05, no son de importancia para el modelo, estas son “loan_amnt” y “term”. A continuación, se eliminan dichas variables, y se vuelve a crear el modelo.</p>
+<p>También se puede observar en la Tabla 3, que la relación de las variables seleccionadas, con respecto a la variable objetivo, en todos los casos es positiva.</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[INFO] creating woe binning ... </code></pre>
@@ -376,7 +380,47 @@ ul.task-list{list-style: none;}
 <center>
 <strong>Figura 1.</strong> Curva de score con respecto a la probabilidad de incumpliemto
 </center>
+<p><br></p>
 <p>En Figura 1, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Min.</th>
+<th style="text-align: center;">1st Qu.</th>
+<th style="text-align: center;">Median</th>
+<th style="text-align: center;">Mean</th>
+<th style="text-align: center;">3rd Qu.</th>
+<th style="text-align: center;">Max.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">298</td>
+<td style="text-align: center;">353</td>
+<td style="text-align: center;">379</td>
+<td style="text-align: center;">387.5</td>
+<td style="text-align: center;">414</td>
+<td style="text-align: center;">576</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<center>
+<strong>Tabla 4.</strong> Descripción del score de los datos trabajados
+</center>
+<p><br></p>
+<p>También podemos observar en la Tabla 4 valores obtenidos al calcular el score a cada uno de los registros del dataset trabajado, vemos que el score minimo, el score maximo , el score promedio, entre otros.</p>
 </section>
 </section>
 <section id="referencias" class="level2">

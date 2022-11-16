@@ -20,7 +20,7 @@ library(kableExtra)
 
 ## 1- Contexto del problema
 
-Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dado ya que pueden exisitir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que desea un crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).
+Los bancos al ser prestamistas , poseen el riesgo de tener perdidas con los créditos dados, ya que pueden existir clientes que sean morosos con los pagos. Se desea crear un modelo que permita predecir, mediante un score calculado con la información del usuario que desea un crédito, la probabilidad de incumplimiento de sus obligaciones financieras en los siguientes 12 meses a la fecha de originación de su crédito. Este modelo ayudaría en a los bancos en sus tomas de decisiones sobre sus clientes. Para la creación del modelo, se uso utilizó un trabajo realizado por Ng Yong Kad (2020), y también la documentación sobre la librería scorecard obtenida por CRAN (2022).
 
 Para la creación del modelo, se utiliza un dataset que posee 45 variables y 466285 registros.
 
@@ -199,6 +199,8 @@ kable(conteo_y,caption = "Cantidad de registros categorizados") %>%
 
 <center>**Tabla 1.** Tabla del conteo de la variable loan_status</center>
 
+<br>
+
 ```{r}
 #Se unen los datos numéricos con los datos categóricos
 datos <- cbind(data_num,data_cat,Y)
@@ -221,6 +223,8 @@ kable(conteo_y2,caption = "Cantidad de registros categorizados balanceados") %>%
 ```
 
 <center>**Tabla 2.** Tabla del nuevo conteo de la variable loan_status</center>
+
+<br>
 
 Debido a la alta cantidad de registros que existen en el dataset, se procede a usar una muestra del 8% de todo el dataset para la creación del modelo, esto debido a la capacidad de cómputo que requiere el modelo para poder trabajar con toda esta cantidad de observaciones.
 
@@ -298,9 +302,13 @@ pander(summary(m))
 
 <center>**Tabla 3.** Tabla de resumen de las variables usadas en el modelo</center>
 
+<br>
+
 Por medio de la Tabla 3, identificamos las variables que hacen mas riesgosa a una persona. Estas son aquellas que tienen un p-valor menor al valor de significancia (0.05) en la columna Pr(\>\|z\|).
 
 Podemos notar que las variables cuyo valor p son mayor a 0.05, no son de importancia para el modelo, estas son "loan_amnt" y "term". A continuación, se eliminan dichas variables, y se vuelve a crear el modelo.
+
+También se puede observar en la Tabla 3, que la relación de las variables seleccionadas, con respecto a la variable objetivo, en todos los casos es positiva.
 
 ```{r}
 
@@ -347,7 +355,21 @@ grid()
 
 <center>**Figura 1.** Curva de score con respecto a la probabilidad de incumpliemto</center>
 
+<br>
+
 En Figura 1, podemos observar que a medida que la probabilidad se vuelve 0 (Cliente cumple con el pago del crédito), el valor del score tiende a crecer. Mientras que cuando probabilidad se vuelve 1 (Cliente incumple con el pago del crédito), el score tiende a disminuir.
+
+```{r}
+#Analisis del score de la población
+
+pander(summary(score12$score))
+```
+
+<center>**Tabla 4.** Descripción del score de los datos trabajados</center>
+
+<br>
+
+También podemos observar en la Tabla 4 valores obtenidos al calcular el score a cada uno de los registros del dataset trabajado, vemos que el score minimo, el score maximo , el score promedio, entre otros.
 
 ## 4- Referencias
 

@@ -10,22 +10,22 @@ load("datos_muestra.RData", verbose = TRUE)
 
 # See above for the definitions of ui and server
 ui <- fluidPage(# App title ----
-                titlePanel(title = h1("Calcula tu Scorecard!",align='center'),windowTitle = 'Calculadora Scorecard'),
+                titlePanel(title = h1("Scorecard",align='center'),windowTitle = 'Calculadora Scorecard'),
                 
                 # Sidebar layout with input and output definitions ----
                 sidebarLayout(
                   # Sidebar panel for inputs ----
                   sidebarPanel(
                     
-                    div(h2("Ingresa tus datos",align='center')),
+                    div(h2("Ingresa los siguientes datos del prestatario",align='center')),
                     div(
-                      textInput("int_rate", h4("Tasa de interés del préstamo"), value = 0),
-                      textInput("installment", h4("Cuota mensual del prestatario"), value = 0),
+                      textInput("int_rate", h4("Tasa de interés del préstamo solicitado"), value = 0),
+                      textInput("installment", h4("Cuota mensual que el prestatario deberá pagar si se le otorga el crédito"), value = 0),
                       textInput("annual_inc", h4("Ingresos anuales declarados por el prestatario"), value = 0),
-                      textInput("open_acc", h4("Créditos abiertos del prestatario"), value = 0),
+                      textInput("open_acc", h4("Número créditos abiertos del prestatario"), value = 0),
                       selectInput(
                         "verification_status",
-                        h4("Ingresos o fuente de ingresos verificada"),
+                        h4("Verificación de los ingresos conjuntos de los copretatarios"),
                         choices = list(
                           "Verificada" = "Verified" ,
                           "Ingresos verificados" = "Source Verified",
@@ -72,7 +72,7 @@ ui <- fluidPage(# App title ----
                             # Output:
                             div(h1(uiOutput("Score",align='center'))),
                             div(img(src = "scorecard.png", height = 150, width = 650,align='center'),align='center'),
-                            div(h3("Este es el score promedio de una muestra de la poblacion: 428",align='center'))
+                            div(h3("Este es el score promedio de una muestra de la poblacion: 387.3",align='center'))
                             )
                 ))
 
