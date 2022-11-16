@@ -371,25 +371,16 @@ pander(summary(score12$score))
 
 También podemos observar en la Tabla 4 valores obtenidos al calcular el score a cada uno de los registros del dataset trabajado, vemos que el score minimo, el score maximo , el score promedio, entre otros.
 
-## 4- Referencias
+## 4- Links
+
+-   Para conocer la aplicación web que creamos utilizando el modelo creado, haz click, <a href='https://sebasrendon12.shinyapps.io/myapp2/'> aquí </a> .
+
+-   Para conocer el video donde explicamos acerca del funcionamiento de la aplicación, haz click, <a href='https://sebasrendon12.shinyapps.io/myapp2/'> aquí </a> .
+
+## 5- Referencias
 
 -   Ng Yong Kad. (2020). Credit Scoring Development Using R. 2022, 15 de ocubre 2022, de rpubs. Sitio web: https://rpubs.com/ngyongkad/scorecard
 
 -   CRAN. (2022). Package 'scorecard'. 2022, 15 de ocubre 2022, de Package 'scorecard'. Sitio web: https://cran.r-project.org/web/packages/scorecard/scorecard.pdf
 
 -   Lunardon N., Menardi G. & Torelli N.. (2022). Package 'ROSE'. 2022, noviembre 5, de cran.r. Sitio web: https://cran.r-project.org/web/packages/ROSE/ROSE.pdf
-
-```{r}
-#Prueba
-#int_rate <- 0.2
-#installment <- 165.19
-#annual_inc <- 54000
-#open_acc <- 5
-#verification_status <- "Not Verified"
-#purpose <- "debt_consolidation"
-
-#pruebaPepe<-data.frame(int_rate,installment,annual_inc,open_acc,verification_status,purpose)
-#pepe2 <- datos_sel[1,]
-#pepe2 <- subset(pepe2, select = -c(loan_status,term))
-#valor <- scorecard_ply(pruebaPepe, card_nuevo)
-```
