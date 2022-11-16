@@ -16,8 +16,12 @@ ui <- fluidPage(# App title ----
                 sidebarLayout(
                   # Sidebar panel for inputs ----
                   sidebarPanel(
-                    
-                    div(h2("Ingresa los siguientes datos del prestatario",align='center')),
+                    h4('En esta página, te ayudamos a poder identificar la probabilidad
+                       de incumplimiento en el pago de un crédito que este solicitando un
+                       cliente nuevo. Esto se logra mediante un puntaje que se calcula con
+                       la información que tendrás que ingresar a continuación (Esta aplicación va dirigida a bancos)', style='text-align:justify;'),
+                    br(),
+                    div(h3("Ingresa los siguientes datos del prestatario",align='center')),
                     div(
                       textInput("int_rate", h4("Tasa de interés del préstamo solicitado"), value = 0),
                       textInput("installment", h4("Cuota mensual que el prestatario deberá pagar si se le otorga el crédito"), value = 0),
@@ -61,18 +65,25 @@ ui <- fluidPage(# App title ----
                       actionButton("Calculate", label = h4("Calcular",style='color:green')),
                       actionButton("refresh", label = h4("Limpiar",style='color:blue'),onclick ="window.open('https://sebasrendon12.shinyapps.io/myapp2/', '_self')"),
                       align='center'
-                    )
-                    
+                    ),
+                    br(),
+                  h4('Para saber más del funcionamiento mira el siguiente ',a('video', href='https://www.youtube.com',target="_blank")),
+                  h4('Para conocer el desarrollo de este trabajo ingresa ',a('aquí', href='https://acastrillonv.github.io/Trabajo-2-TAE/',target="_blank"))
                     ,width = 6),
                   
                   # Main panel for displaying outputs ----
                   mainPanel(h2("Tu puntaje es", align='center'),
-                            style='position: fixed;right: 1VH;top: 25%; width:50%;',
+                            style='position: fixed;right: 1VH;top: 22%; width:50%;',
                             
                             # Output:
                             div(h1(uiOutput("Score",align='center'))),
-                            div(img(src = "scorecard.png", height = 150, width = 650,align='center'),align='center'),
-                            div(h3("Este es el score promedio de una muestra de la poblacion: 387.3",align='center'))
+                            div(img(src = "scorecard-info.png", height = 150, width = 650,align='center'),align='center'),
+                            div(h3("Este es el score promedio de una muestra de la poblacion: 387.3",align='center')),
+                            br(),
+                            h4('Con el puntaje obtenido, se puede observar a que
+                               rango pertenece en la gráfica y observar la probabilidad de incumplimiento.',style='text-align:center;'),
+                            h4('Mientras el score sea más grande, la probabilidad de incumplimiento será baja,
+                               pero si el score es bajo, la probabilidad de incumplimiento será alta.',style='text-align:center;')
                             )
                 ))
 

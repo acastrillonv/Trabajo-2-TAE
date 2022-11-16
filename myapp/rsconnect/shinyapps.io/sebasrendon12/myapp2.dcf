@@ -5,9 +5,9 @@ account: sebasrendon12
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7336688
-bundleId: 6413450
+bundleId: 6519598
 url: https://sebasrendon12.shinyapps.io/myapp2/
-when: 1666063893.18661
-lastSyncTime: 1666063893.18662
+when: 1668583888.5215
+lastSyncTime: 1668583888.5215
 asMultiple: FALSE
 asStatic: FALSE
