@@ -373,9 +373,9 @@ También podemos observar en la Tabla 4 valores obtenidos al calcular el score a
 
 ## 4- Links
 
--   Para conocer la aplicación web que creamos utilizando el modelo creado, haz click, <a href='https://sebasrendon12.shinyapps.io/myapp2/'> aquí </a> .
+-   Para conocer la aplicación web que creamos utilizando el modelo creado, haz click, <a href='https://sebasrendon12.shinyapps.io/myapp2/' target="_blank"> aquí </a> .
 
--   Para conocer el video donde explicamos acerca del funcionamiento de la aplicación, haz click, <a href='https://sebasrendon12.shinyapps.io/myapp2/'> aquí </a> .
+-   Para conocer el video donde explicamos acerca del funcionamiento de la aplicación, haz click, <a href='https://youtu.be/zIcxs7rd_9g' target="_blank"> aquí </a> .
 
 ## 5- Referencias
 
