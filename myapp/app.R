@@ -67,7 +67,7 @@ ui <- fluidPage(# App title ----
                       align='center'
                     ),
                     br(),
-                  h4('Para saber más del funcionamiento mira el siguiente ',a('video', href='https://www.youtube.com',target="_blank")),
+                  h4('Para saber más del funcionamiento mira el siguiente ',a('video', href='https://youtu.be/zIcxs7rd_9g',target="_blank")),
                   h4('Para conocer el desarrollo de este trabajo ingresa ',a('aquí', href='https://acastrillonv.github.io/Trabajo-2-TAE/',target="_blank"))
                     ,width = 6),
                   
